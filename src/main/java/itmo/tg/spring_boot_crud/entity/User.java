@@ -1,9 +1,12 @@
 package itmo.tg.spring_boot_crud.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Collection;
 
+@Entity
+@Data
 public class User {
 
     @Id

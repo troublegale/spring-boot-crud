@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Data
 public class Person {
 
     @Id
@@ -23,7 +26,7 @@ public class Person {
     private Color hairColor;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", nullable = true)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     private LocalDateTime birthday;

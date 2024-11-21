@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
+@Table(name = "lab_work")
 public class LabWork {
 
     @Id
