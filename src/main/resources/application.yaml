@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: spring-boot-crud
+server:
+  port: 8383
