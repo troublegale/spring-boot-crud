@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.models;
+package ru.itmo.tg.springbootcrud.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.models;
+package ru.itmo.tg.springbootcrud.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itmo.tg.springbootcrud.models.enums.Action;
+import ru.itmo.tg.springbootcrud.model.enums.Action;
 
 import java.time.LocalDateTime;
 

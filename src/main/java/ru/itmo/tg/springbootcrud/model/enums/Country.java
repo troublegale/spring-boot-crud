@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.models.enums;
+package ru.itmo.tg.springbootcrud.model.enums;
 
 public enum Country {
 
