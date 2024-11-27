@@ -41,7 +41,7 @@ public class Person {
     @Size(max = 40)
     private String passportID;
 
-    @Column(name= "nationality", nullable = false)
+    @Column(name = "nationality", nullable = false)
     @NotNull
     @Enumerated(EnumType.STRING)
     private Country nationality;

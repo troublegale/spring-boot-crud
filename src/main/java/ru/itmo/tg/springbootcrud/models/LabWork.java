@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itmo.tg.springbootcrud.models.enums.Diffifulty;
+import ru.itmo.tg.springbootcrud.models.enums.Difficulty;
 
 import java.util.Date;
 
@@ -43,7 +43,7 @@ public class LabWork {
 
     @Column(name = "difficulty")
     @Enumerated(EnumType.STRING)
-    private Diffifulty difficulty;
+    private Difficulty difficulty;
 
     @JoinColumn(name = "discipline_id", nullable = false)
     @OneToOne(cascade = CascadeType.ALL)

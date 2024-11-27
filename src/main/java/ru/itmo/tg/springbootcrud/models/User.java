@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import ru.itmo.tg.springbootcrud.models.enums.Role;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
