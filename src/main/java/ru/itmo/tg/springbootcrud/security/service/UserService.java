@@ -1,13 +1,16 @@
-package ru.itmo.tg.springbootcrud.service;
+package ru.itmo.tg.springbootcrud.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.model.User;
-import ru.itmo.tg.springbootcrud.model.enums.Role;
-import ru.itmo.tg.springbootcrud.repository.UserRepository;
+import ru.itmo.tg.springbootcrud.security.model.User;
+import ru.itmo.tg.springbootcrud.security.model.enums.Role;
+import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +43,27 @@ public class UserService {
         return getByUsername(username);
     }
 
-    @Deprecated
-    public void promoteCurrent() {
-        User user = getCurrentUser();
+    public void grantAdmin(String username) {
+        User user = repository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         user.setRole(Role.ROLE_ADMIN);
-        save(user);
+        repository.save(user);
+    }
+
+    public List<User> getAllUsers() {
+        return repository.findAll();
+    }
+
+    public List<User> getAllAdmins() {
+        return repository.findAll()
+                .stream().filter(u -> u.getRole() == Role.ROLE_ADMIN)
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getAllNonAdmins() {
+        return repository.findAll()
+                .stream().filter(u -> u.getRole() == Role.ROLE_USER)
+                .collect(Collectors.toList());
     }
 
 }

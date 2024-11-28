@@ -19,3 +19,7 @@ spring:
 jwt:
     secret: ${JWT_SECRET}
     lifetime: ${JWT_LIFETIME}
+credentials:
+    admin:
+        username: ${ADMIN_USERNAME}
+        password: ${ADMIN_PASSWORD}

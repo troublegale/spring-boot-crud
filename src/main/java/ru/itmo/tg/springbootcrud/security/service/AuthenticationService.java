@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.service;
+package ru.itmo.tg.springbootcrud.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -6,10 +6,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.dto.AuthRequest;
-import ru.itmo.tg.springbootcrud.dto.JwtAuthenticationResponse;
-import ru.itmo.tg.springbootcrud.model.User;
-import ru.itmo.tg.springbootcrud.model.enums.Role;
+import ru.itmo.tg.springbootcrud.security.model.AuthRequest;
+import ru.itmo.tg.springbootcrud.security.model.JwtAuthenticationResponse;
+import ru.itmo.tg.springbootcrud.security.model.User;
+import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
 @Service
 @RequiredArgsConstructor

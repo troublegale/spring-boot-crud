@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.dto;
+package ru.itmo.tg.springbootcrud.security.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

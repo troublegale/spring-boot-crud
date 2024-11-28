@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.configuration;
+package ru.itmo.tg.springbootcrud.security.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import ru.itmo.tg.springbootcrud.filter.JwtAuthenticationFilter;
-import ru.itmo.tg.springbootcrud.service.UserService;
+import ru.itmo.tg.springbootcrud.security.filter.JwtAuthenticationFilter;
+import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/person").permitAll()
                         .requestMatchers("/lab_work").permitAll()
-                        .requestMatchers("roflan/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager ->

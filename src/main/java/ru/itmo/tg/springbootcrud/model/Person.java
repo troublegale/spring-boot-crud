@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itmo.tg.springbootcrud.model.enums.Color;
 import ru.itmo.tg.springbootcrud.model.enums.Country;
+import ru.itmo.tg.springbootcrud.security.model.User;
 
 @Entity
 @Table(name = "persons")

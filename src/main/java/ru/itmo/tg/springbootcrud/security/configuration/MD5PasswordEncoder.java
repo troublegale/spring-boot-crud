@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.configuration;
+package ru.itmo.tg.springbootcrud.security.configuration;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 

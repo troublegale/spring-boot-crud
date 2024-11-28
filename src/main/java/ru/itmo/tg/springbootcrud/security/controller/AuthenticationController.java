@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.controller;
+package ru.itmo.tg.springbootcrud.security.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.itmo.tg.springbootcrud.dto.AuthRequest;
-import ru.itmo.tg.springbootcrud.dto.JwtAuthenticationResponse;
-import ru.itmo.tg.springbootcrud.service.AuthenticationService;
+import ru.itmo.tg.springbootcrud.security.model.AuthRequest;
+import ru.itmo.tg.springbootcrud.security.model.JwtAuthenticationResponse;
+import ru.itmo.tg.springbootcrud.security.service.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication")
-public class AuthController {
+public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 

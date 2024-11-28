@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.model;
+package ru.itmo.tg.springbootcrud.security.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.itmo.tg.springbootcrud.model.enums.Role;
+import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
 import java.util.Collection;
 import java.util.List;

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itmo.tg.springbootcrud.model.enums.Difficulty;
+import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.Date;
 

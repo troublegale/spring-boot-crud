@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.filter;
+package ru.itmo.tg.springbootcrud.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.itmo.tg.springbootcrud.service.JwtService;
-import ru.itmo.tg.springbootcrud.service.UserService;
+import ru.itmo.tg.springbootcrud.security.service.JwtService;
+import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.io.IOException;
 
