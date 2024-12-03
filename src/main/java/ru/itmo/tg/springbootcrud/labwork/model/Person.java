@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.model;
+package ru.itmo.tg.springbootcrud.labwork.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itmo.tg.springbootcrud.model.enums.Color;
-import ru.itmo.tg.springbootcrud.model.enums.Country;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.Color;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.Country;
 import ru.itmo.tg.springbootcrud.security.model.User;
 
 @Entity

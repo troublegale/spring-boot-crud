@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.model;
+package ru.itmo.tg.springbootcrud.labwork.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.tg.springbootcrud.security.model.User;
 
 @Entity
 @Table(name = "disciplines")
@@ -27,5 +28,10 @@ public class Discipline {
 
     @Column(name = "lecture_hours")
     private int lectureHours;
+
+    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    private User owner;
 
 }

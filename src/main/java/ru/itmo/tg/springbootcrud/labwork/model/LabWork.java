@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.model;
+package ru.itmo.tg.springbootcrud.labwork.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.itmo.tg.springbootcrud.model.enums.Difficulty;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.Date;

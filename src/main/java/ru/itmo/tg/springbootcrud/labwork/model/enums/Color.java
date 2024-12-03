@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.model.enums;
+package ru.itmo.tg.springbootcrud.labwork.model.enums;
 
 public enum Color {
 

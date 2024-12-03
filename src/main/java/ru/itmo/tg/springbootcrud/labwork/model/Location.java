@@ -1,7 +1,6 @@
-package ru.itmo.tg.springbootcrud.model;
+package ru.itmo.tg.springbootcrud.labwork.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,23 +8,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "coordinates")
+@Table(name = "locations")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Coordinates {
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "x")
-    @Max(599)
-    private double x;
+    private long x;
 
-    @Column(name = "y", nullable = false)
+    @Column(name = "y")
     @NotNull
-    private Long y;
+    private Double y;
+
+    @Column(name = "z")
+    private float z;
 
 }
