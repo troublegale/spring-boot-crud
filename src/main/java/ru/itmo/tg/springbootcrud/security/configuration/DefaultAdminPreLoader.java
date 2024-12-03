@@ -11,7 +11,7 @@ import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 @Component
 @RequiredArgsConstructor
-public class PreLoader implements CommandLineRunner {
+public class DefaultAdminPreLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,12 +25,12 @@ public class PreLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (userRepository.findByUsername(adminUsername).isEmpty()) {
-            User user = User.builder()
+            User admin = User.builder()
                     .username(adminUsername)
                     .password(passwordEncoder.encode(adminPassword))
                     .role(Role.ROLE_ADMIN)
                     .build();
-            userRepository.save(user);
+            userRepository.save(admin);
         }
     }
 
