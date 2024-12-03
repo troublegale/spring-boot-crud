@@ -62,8 +62,9 @@ public class UserService {
 
     public List<User> getAllNonAdmins() {
         return repository.findAll()
-                .stream().filter(u -> u.getRole() == Role.ROLE_USER)
+                .stream().filter(u -> u.getRole() != Role.ROLE_ADMIN)
                 .collect(Collectors.toList());
     }
+
 
 }
