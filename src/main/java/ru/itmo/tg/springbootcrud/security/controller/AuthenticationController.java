@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.tg.springbootcrud.security.model.AuthRequest;
-import ru.itmo.tg.springbootcrud.security.model.JwtAuthenticationResponse;
+import ru.itmo.tg.springbootcrud.security.dto.AuthRequest;
+import ru.itmo.tg.springbootcrud.security.dto.JwtAuthenticationResponse;
 import ru.itmo.tg.springbootcrud.security.service.AuthenticationService;
 
 @RestController
