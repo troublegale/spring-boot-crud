@@ -25,7 +25,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
     @NotNull
@@ -34,7 +34,6 @@ public class User implements UserDetails {
 
     @Column(name = "password", nullable = false)
     @NotNull
-    @Size(min = 8, max = 255)
     private String password;
 
     @Column(name = "role", nullable = false)
