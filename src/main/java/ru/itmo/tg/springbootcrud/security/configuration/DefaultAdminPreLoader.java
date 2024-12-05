@@ -23,7 +23,7 @@ public class DefaultAdminPreLoader implements CommandLineRunner {
     private String adminPassword;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (userRepository.findByUsername(adminUsername).isEmpty()) {
             User admin = User.builder()
                     .username(adminUsername)
