@@ -7,19 +7,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
-import ru.itmo.tg.springbootcrud.security.model.enums.RoleChangeRequestStatus;
+import ru.itmo.tg.springbootcrud.security.model.enums.RoleChangeTicketStatus;
 
 @Entity
-@Table(name = "role_change_requests")
+@Table(name = "role_change_tickets")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoleChangeRequest {
+public class RoleChangeTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,10 +34,10 @@ public class RoleChangeRequest {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private RoleChangeRequestStatus status;
+    private RoleChangeTicketStatus status;
 
     @JoinColumn(name = "resolver_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private User resolvedBy;
+    private User resolver;
 
 }
