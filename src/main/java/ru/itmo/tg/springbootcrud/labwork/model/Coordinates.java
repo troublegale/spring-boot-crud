@@ -18,7 +18,7 @@ public class Coordinates {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "x")
     @Max(599)

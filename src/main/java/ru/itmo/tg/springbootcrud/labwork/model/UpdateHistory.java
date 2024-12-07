@@ -21,7 +21,7 @@ public class UpdateHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "lab_work_id", nullable = false)
     @NotNull

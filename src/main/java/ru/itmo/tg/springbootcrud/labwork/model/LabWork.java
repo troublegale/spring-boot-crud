@@ -21,7 +21,7 @@ public class LabWork {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     @NotNull
@@ -42,14 +42,14 @@ public class LabWork {
     @NotBlank
     private String description;
 
+    @JoinColumn(name = "discipline_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @NotNull
+    private Discipline discipline;
+
     @Column(name = "difficulty")
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
-
-    @JoinColumn(name = "discipline_id", nullable = false)
-    @OneToOne(cascade = CascadeType.ALL)
-    @NotNull
-    private Discipline discipline;
 
     @Column(name = "minimal_point")
     @Positive
@@ -60,11 +60,11 @@ public class LabWork {
     private float averagePoint;
 
     @JoinColumn(name = "author_id", nullable = false)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @NotNull
     private Person author;
 
-    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User owner;

@@ -19,7 +19,7 @@ public class Discipline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     @NotNull
@@ -29,7 +29,7 @@ public class Discipline {
     @Column(name = "lecture_hours")
     private int lectureHours;
 
-    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User owner;

@@ -22,7 +22,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "eye_color", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -47,7 +47,7 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Country nationality;
 
-    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User owner;
