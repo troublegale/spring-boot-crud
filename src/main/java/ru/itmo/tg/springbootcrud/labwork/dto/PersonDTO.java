@@ -27,8 +27,8 @@ public class PersonDTO {
 
     private String passportID;
 
-    private Country country;
+    private Country nationality;
 
-    private Long userId;
+    private String ownerUsername;
 
 }

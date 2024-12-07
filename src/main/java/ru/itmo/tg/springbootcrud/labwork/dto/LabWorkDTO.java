@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +22,9 @@ public class LabWorkDTO {
 
     private String description;
 
-    private DisciplineDTO discipline;
+    private Difficulty difficulty;
+
+    private DisciplineDTO disciplineDTO;
 
     private Integer minimalPoint;
 
@@ -29,6 +32,6 @@ public class LabWorkDTO {
 
     private PersonDTO personDTO;
 
-    private Long userId;
+    private String ownerUsername;
 
 }

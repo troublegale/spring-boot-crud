@@ -17,6 +17,6 @@ public class DisciplineDTO {
 
     private Integer lectureHours;
 
-    private Long userId;
+    private String ownerUsername;
 
 }
