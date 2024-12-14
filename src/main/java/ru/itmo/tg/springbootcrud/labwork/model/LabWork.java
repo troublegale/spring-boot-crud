@@ -29,7 +29,7 @@ public class LabWork {
     private String name;
 
     @JoinColumn(name = "coordinates_id", nullable = false)
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @NotNull
     private Coordinates coordinates;
 
