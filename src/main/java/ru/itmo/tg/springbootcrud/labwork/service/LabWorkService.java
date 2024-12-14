@@ -10,12 +10,14 @@ import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonDTO;
 import ru.itmo.tg.springbootcrud.labwork.model.*;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Action;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 import ru.itmo.tg.springbootcrud.labwork.repository.LabWorkRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +57,33 @@ public class LabWorkService {
     public void deleteLabWork(Long id, User user) {
         labWorkRepository.deleteById(id);
         updateHistoryRepository.save(updateEntry(id, Action.DELETE, user));
+    }
+
+    public Boolean deleteLabWorkByMinimalPoint(Integer p) {
+        return labWorkRepository.deleteLabWorkByMinimalPoint(p);
+    }
+
+    public Integer getCountByAuthorId(Long authorId) {
+        return labWorkRepository.getCountByAuthorId(authorId);
+    }
+
+    public List<LabWorkDTO> getLabWorksWithDescriptionContaining(String substring, Integer page, Integer pageSize) {
+        var labs = labWorkRepository.getLabWorksWithDescriptionContaining(substring, page - 1, pageSize);
+        labs.forEach(System.out::println);
+        return toDTO(labs);
+    }
+
+    public Difficulty adjustDifficulty(Long id, Integer steps) {
+        String[] diffStringVals = Arrays.stream(Difficulty.values())
+                .map(Difficulty::toString)
+                .toList().toArray(String[]::new);
+        String diffVal = labWorkRepository.adjustDifficulty(id, steps, diffStringVals);
+        return Difficulty.valueOf(diffVal);
+    }
+
+    public LabWorkDTO copyLabWorkToDiscipline(Long labId, Long disciplineId, User user) {
+        LabWork lab = labWorkRepository.copyLabWorkToDiscipline(labId, disciplineId, user.getId());
+        return toDTO(lab);
     }
 
     private UpdateHistory updateEntry(Long labId, Action action, User actor) {
