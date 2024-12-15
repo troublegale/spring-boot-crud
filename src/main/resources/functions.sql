@@ -1,4 +1,4 @@
-create or replace function delete_lab_work_by_minimal_point(p integer)
+create or replace function delete_lab_work_by_minimal_point(p integer, u_id bigint)
     returns boolean as
 '
     declare
@@ -9,7 +9,7 @@ create or replace function delete_lab_work_by_minimal_point(p integer)
         where id in
               (select id
                from lab_works
-               where minimal_point = p
+               where minimal_point = p and user_id = u_id
                limit 1)
         returning true into deleted;
         IF deleted IS NULL THEN

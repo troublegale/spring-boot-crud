@@ -52,7 +52,7 @@ public class LabWorkController {
 
     @DeleteMapping("/delete-by-minimal-point")
     public Boolean deleteLabWorkByMinimalPoint(@RequestParam(name = "p") Integer minimalPoint) {
-        return labWorkService.deleteLabWorkByMinimalPoint(minimalPoint);
+        return labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
     }
 
     @GetMapping("/count-by-author")
