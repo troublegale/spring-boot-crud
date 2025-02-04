@@ -4,10 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.*;
 import ru.itmo.tg.springbootcrud.labwork.model.*;
-import ru.itmo.tg.springbootcrud.labwork.repository.CoordinatesRepository;
-import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
-import ru.itmo.tg.springbootcrud.labwork.repository.LocationRepository;
-import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 import java.util.List;
@@ -17,18 +13,6 @@ import java.util.List;
 public class ModelDTOConverter {
 
     private final UserRepository userRepository;
-    private final LocationRepository locationRepository;
-    private final PersonRepository personRepository;
-    private final CoordinatesRepository coordinatesRepository;
-    private final DisciplineRepository disciplineRepository;
-
-    public CoordinatesDTO convert(Coordinates coordinates) {
-        return CoordinatesDTO.builder()
-                .id(coordinates.getId())
-                .x(coordinates.getX())
-                .y(coordinates.getY())
-                .build();
-    }
 
     public DisciplineDTO convert(Discipline discipline) {
         return DisciplineDTO.builder()
@@ -39,21 +23,12 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public LocationDTO convert(Location location) {
-        return LocationDTO.builder()
-                .id(location.getId())
-                .x(location.getX())
-                .y(location.getY())
-                .z(location.getZ())
-                .build();
-    }
-
     public PersonDTO convert(Person person) {
         return PersonDTO.builder()
                 .id(person.getId())
                 .eyeColor(person.getEyeColor())
                 .hairColor(person.getHairColor())
-                .locationId(person.getLocation().getId())
+                .location(person.getLocation())
                 .passportId(person.getPassportID())
                 .nationality(person.getNationality())
                 .ownerUsername(person.getOwner().getUsername())
@@ -64,22 +39,14 @@ public class ModelDTOConverter {
         return LabWorkDTO.builder()
                 .id(labWork.getId())
                 .name(labWork.getName())
-                .coordinatesId(labWork.getCoordinates().getId())
+                .coordinates(labWork.getCoordinates())
                 .description(labWork.getDescription())
-                .disciplineId(labWork.getDiscipline().getId())
+                .discipline(convert(labWork.getDiscipline()))
                 .difficulty(labWork.getDifficulty())
                 .minimalPoint(labWork.getMinimalPoint())
                 .averagePoint(labWork.getAveragePoint())
-                .authorId(labWork.getAuthor().getId())
+                .author(convert(labWork.getAuthor()))
                 .ownerUsername(labWork.getOwner().getUsername())
-                .build();
-    }
-
-    public Coordinates convert(CoordinatesDTO coordinatesDTO) {
-        return Coordinates.builder()
-                .id(coordinatesDTO.getId())
-                .x(coordinatesDTO.getX())
-                .y(coordinatesDTO.getY())
                 .build();
     }
 
@@ -92,22 +59,12 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public Location convert(LocationDTO locationDTO) {
-        return Location.builder()
-                .id(locationDTO.getId())
-                .x(locationDTO.getX())
-                .y(locationDTO.getY())
-                .z(locationDTO.getZ())
-                .owner(userRepository.findByUsername(locationDTO.getOwnerUsername()).orElseThrow())
-                .build();
-    }
-
     public Person convert(PersonDTO personDTO) {
         return Person.builder()
                 .id(personDTO.getId())
                 .eyeColor(personDTO.getEyeColor())
                 .hairColor(personDTO.getHairColor())
-                .location(locationRepository.findById(personDTO.getLocationId()).orElseThrow())
+                .location(personDTO.getLocation())
                 .passportID(personDTO.getPassportId())
                 .nationality(personDTO.getNationality())
                 .owner(userRepository.findByUsername(personDTO.getOwnerUsername()).orElseThrow())
@@ -118,13 +75,13 @@ public class ModelDTOConverter {
         return LabWork.builder()
                 .id(labWorkDTO.getId())
                 .name(labWorkDTO.getName())
-                .coordinates(coordinatesRepository.findById(labWorkDTO.getCoordinatesId()).orElseThrow())
+                .coordinates(labWorkDTO.getCoordinates())
                 .description(labWorkDTO.getDescription())
-                .discipline(disciplineRepository.findById(labWorkDTO.getDisciplineId()).orElseThrow())
+                .discipline(convert(labWorkDTO.getDiscipline()))
                 .difficulty(labWorkDTO.getDifficulty())
                 .minimalPoint(labWorkDTO.getMinimalPoint())
                 .averagePoint(labWorkDTO.getAveragePoint())
-                .author(personRepository.findById(labWorkDTO.getAuthorId()).orElseThrow())
+                .author(convert(labWorkDTO.getAuthor()))
                 .owner(userRepository.findByUsername(labWorkDTO.getOwnerUsername()).orElseThrow())
                 .build();
     }
@@ -151,22 +108,6 @@ public class ModelDTOConverter {
 
     public List<Discipline> toDisciplineList(List<DisciplineDTO> disciplineDTOList) {
         return disciplineDTOList.stream().map(this::convert).toList();
-    }
-
-    public List<CoordinatesDTO> toCoordinatesDTOList(List<Coordinates> coordinatesList) {
-        return coordinatesList.stream().map(this::convert).toList();
-    }
-
-    public List<Coordinates> toCoordinatesList(List<CoordinatesDTO> coordinatesDTOList) {
-        return coordinatesDTOList.stream().map(this::convert).toList();
-    }
-
-    public List<LocationDTO> toLocationDTOList(List<Location> locationList) {
-        return locationList.stream().map(this::convert).toList();
-    }
-
-    public List<Location> toLocationList(List<LocationDTO> locationDTOList) {
-        return locationDTOList.stream().map(this::convert).toList();
     }
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.tg.springbootcrud.labwork.model.Coordinates;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 
 import java.util.Date;
@@ -18,11 +19,11 @@ public class LabWorkDTO {
 
     private String name;
 
-    private long coordinatesId;
+    private Coordinates coordinates;
 
     private String description;
 
-    private long disciplineId;
+    private DisciplineDTO discipline;
 
     private Difficulty difficulty;
 
@@ -30,7 +31,7 @@ public class LabWorkDTO {
 
     private float averagePoint;
 
-    private long authorId;
+    private PersonDTO author;
 
     private String ownerUsername;
 

@@ -29,7 +29,7 @@ public class LabWork {
     private String name;
 
     @JoinColumn(name = "coordinates_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     private Coordinates coordinates;
 
@@ -43,7 +43,7 @@ public class LabWork {
     private String description;
 
     @JoinColumn(name = "discipline_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull
     private Discipline discipline;
 
@@ -60,12 +60,12 @@ public class LabWork {
     private float averagePoint;
 
     @JoinColumn(name = "author_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull
     private Person author;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @NotNull
     private User owner;
 

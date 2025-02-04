@@ -28,7 +28,7 @@ public class UpdateHistory {
     private long labWorkID;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @NotNull
     private User user;
 

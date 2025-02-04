@@ -48,7 +48,7 @@ public class Person {
     private Country nationality;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @NotNull
     private User owner;
 

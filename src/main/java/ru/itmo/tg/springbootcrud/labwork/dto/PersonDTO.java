@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.tg.springbootcrud.labwork.model.Location;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Color;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Country;
 
@@ -19,7 +20,7 @@ public class PersonDTO {
 
     private Color hairColor;
 
-    private long locationId;
+    private Location location;
 
     private String passportId;
 

@@ -29,9 +29,4 @@ public class Coordinates {
     @NotNull
     private Long y;
 
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    private User owner;
-
 }

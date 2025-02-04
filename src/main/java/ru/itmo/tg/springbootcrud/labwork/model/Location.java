@@ -30,9 +30,4 @@ public class Location {
     @Column(name = "z")
     private float z;
 
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotNull
-    private User owner;
-
 }
