@@ -25,7 +25,8 @@ public class LabWorkService {
     private final ModelDTOConverter modelDTOConverter;
 
     public List<LabWorkDTO> getLabWorks(Integer pageNumber, Integer pageSize, String order, String sortCol) {
-        Page<LabWork> page = labWorkRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
+        Page<LabWork> page = labWorkRepository.findAll(PageRequest.of(
+                pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
         return modelDTOConverter.toLabWorkDTOList(page.getContent());
     }
 
