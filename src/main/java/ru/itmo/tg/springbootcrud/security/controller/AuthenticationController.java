@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.tg.springbootcrud.security.dto.AuthRequest;
 import ru.itmo.tg.springbootcrud.security.dto.JwtAuthenticationResponse;
@@ -31,9 +32,9 @@ public class AuthenticationController {
         return authenticationService.signIn(request);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handle(RuntimeException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
 }
