@@ -137,4 +137,36 @@ public class ModelDTOConverter {
         return labWorkDTOList.stream().map(this::convert).toList();
     }
 
+    public List<PersonDTO> toPersonDTOList(List<Person> personList) {
+        return personList.stream().map(this::convert).toList();
+    }
+
+    public List<Person> toPersonList(List<PersonDTO> personDTOList) {
+        return personDTOList.stream().map(this::convert).toList();
+    }
+
+    public List<DisciplineDTO> toDisciplineDTOList(List<Discipline> disciplineList) {
+        return disciplineList.stream().map(this::convert).toList();
+    }
+
+    public List<Discipline> toDisciplineList(List<DisciplineDTO> disciplineDTOList) {
+        return disciplineDTOList.stream().map(this::convert).toList();
+    }
+
+    public List<CoordinatesDTO> toCoordinatesDTOList(List<Coordinates> coordinatesList) {
+        return coordinatesList.stream().map(this::convert).toList();
+    }
+
+    public List<Coordinates> toCoordinatesList(List<CoordinatesDTO> coordinatesDTOList) {
+        return coordinatesDTOList.stream().map(this::convert).toList();
+    }
+
+    public List<LocationDTO> toLocationDTOList(List<Location> locationList) {
+        return locationList.stream().map(this::convert).toList();
+    }
+
+    public List<Location> toLocationList(List<LocationDTO> locationDTOList) {
+        return locationDTOList.stream().map(this::convert).toList();
+    }
+
 }
