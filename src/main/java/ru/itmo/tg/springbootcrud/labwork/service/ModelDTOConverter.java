@@ -2,8 +2,14 @@ package ru.itmo.tg.springbootcrud.labwork.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.labwork.dto.*;
-import ru.itmo.tg.springbootcrud.labwork.model.*;
+import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.PersonDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.UpdateHistoryDTO;
+import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
+import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
+import ru.itmo.tg.springbootcrud.labwork.model.Person;
+import ru.itmo.tg.springbootcrud.labwork.model.UpdateHistory;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 import java.util.List;

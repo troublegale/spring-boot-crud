@@ -42,4 +42,5 @@ public class DisciplineController {
     public void deleteDiscipline(@PathVariable Long id) {
         disciplineService.deleteDiscipline(id);
     }
+
 }

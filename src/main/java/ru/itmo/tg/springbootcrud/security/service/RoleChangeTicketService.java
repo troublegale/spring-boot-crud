@@ -11,7 +11,6 @@ import ru.itmo.tg.springbootcrud.security.repository.RoleChangeTicketRepository;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
