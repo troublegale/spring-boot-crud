@@ -12,6 +12,8 @@ import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 @Builder
 public class UserDTO {
 
+    private Long id;
+
     private String username;
 
     private Role role;

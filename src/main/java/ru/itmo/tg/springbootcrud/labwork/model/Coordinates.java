@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.tg.springbootcrud.security.model.User;
 
 @Entity
 @Table(name = "coordinates")
@@ -27,5 +28,10 @@ public class Coordinates {
     @Column(name = "y", nullable = false)
     @NotNull
     private Long y;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    private User owner;
 
 }

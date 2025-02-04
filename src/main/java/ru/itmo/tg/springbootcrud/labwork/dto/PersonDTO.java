@@ -19,13 +19,9 @@ public class PersonDTO {
 
     private Color hairColor;
 
-    private Long x;
+    private long locationId;
 
-    private Double y;
-
-    private Float z;
-
-    private String passportID;
+    private String passportId;
 
     private Country nationality;
 

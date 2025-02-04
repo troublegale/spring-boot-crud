@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,21 +18,19 @@ public class LabWorkDTO {
 
     private String name;
 
-    private Double x;
-
-    private Long y;
+    private long coordinatesId;
 
     private String description;
 
+    private long disciplineId;
+
     private Difficulty difficulty;
 
-    private DisciplineDTO disciplineDTO;
+    private int minimalPoint;
 
-    private Integer minimalPoint;
+    private float averagePoint;
 
-    private Float averagePoint;
-
-    private PersonDTO personDTO;
+    private long authorId;
 
     private String ownerUsername;
 

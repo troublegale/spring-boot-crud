@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.itmo.tg.springbootcrud.security.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository repository;
+    private final ModelDTOConverter modelDTOConverter;
 
     public void createUser(User user) {
         if (repository.existsByUsername(user.getUsername())) {
@@ -26,11 +28,11 @@ public class UserService {
     }
 
     public UserDTO getByUsername(String username) {
-        return toDTO(getUserByUsername(username));
+        return modelDTOConverter.convert(getUserByUsername(username));
     }
 
     public List<UserDTO> getAllUsers() {
-        return toDTOList(repository.findAll());
+        return modelDTOConverter.convert(repository.findAll());
     }
 
     public User getCurrentUser() {
@@ -42,20 +44,9 @@ public class UserService {
         return this::getUserByUsername;
     }
 
-    private User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
-    private UserDTO toDTO(User user) {
-        return UserDTO.builder()
-                .username(user.getUsername())
-                .role(user.getRole())
-                .build();
-    }
-
-    private List<UserDTO> toDTOList(List<User> users) {
-        return users.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
 }
