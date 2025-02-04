@@ -15,21 +15,22 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RoleChangeService {
+public class RoleChangeTicketService {
 
     private final RoleChangeTicketRepository roleChangeTicketRepository;
     private final UserRepository userRepository;
+    private final UserModelDTOConverter userModelDTOConverter;
 
     public List<RoleChangeTicketDTO> getAllRoleChangeRequests() {
-        return toDTOList(roleChangeTicketRepository.findAll());
+        return userModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findAll());
     }
 
     public RoleChangeTicketDTO getRoleChangeTicketById(Long id) {
-        return toDTO(roleChangeTicketRepository.findById(id).orElseThrow());
+        return userModelDTOConverter.convert(roleChangeTicketRepository.findById(id).orElseThrow());
     }
 
     public List<RoleChangeTicketDTO> getRoleChangeTicketsByUser(User user) {
-        return toDTOList(roleChangeTicketRepository.findByUser(user));
+        return userModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findByUser(user));
     }
 
     public void createRoleChangeTicket(RoleChangeRequest roleChangeRequest, User user) {
@@ -57,21 +58,6 @@ public class RoleChangeService {
         ticket.setStatus(RoleChangeTicketStatus.REJECTED);
         ticket.setResolver(resolver);
         roleChangeTicketRepository.save(ticket);
-    }
-
-    private RoleChangeTicketDTO toDTO(RoleChangeTicket roleChangeTicket) {
-        return RoleChangeTicketDTO.builder()
-                .id(roleChangeTicket.getId())
-                .username(roleChangeTicket.getUser().getUsername())
-                .role(roleChangeTicket.getRole())
-                .status(roleChangeTicket.getStatus())
-                .resolverUsername(
-                        roleChangeTicket.getResolver() == null ? null : roleChangeTicket.getResolver().getUsername())
-                .build();
-    }
-
-    private List<RoleChangeTicketDTO> toDTOList(List<RoleChangeTicket> roleChangeTickets) {
-        return roleChangeTickets.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
 }

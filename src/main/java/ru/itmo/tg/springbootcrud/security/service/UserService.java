@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
-        return userModelDTOConverter.convert(repository.findAll());
+        return userModelDTOConverter.toUserDTOList(repository.findAll());
     }
 
     public User getCurrentUser() {

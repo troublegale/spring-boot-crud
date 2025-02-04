@@ -50,6 +50,16 @@ public class ModelDTOConverter {
                 .build();
     }
 
+    public UpdateHistoryDTO convert(UpdateHistory updateHistory) {
+        return UpdateHistoryDTO.builder()
+                .id(updateHistory.getId())
+                .labWorkId(updateHistory.getLabWorkID())
+                .username(updateHistory.getUser().getUsername())
+                .action(updateHistory.getAction())
+                .actionTime(updateHistory.getActionTime())
+                .build();
+    }
+
     public Discipline convert(DisciplineDTO disciplineDTO) {
         return Discipline.builder()
                 .id(disciplineDTO.getId())
@@ -86,6 +96,16 @@ public class ModelDTOConverter {
                 .build();
     }
 
+    public UpdateHistory convert(UpdateHistoryDTO updateHistoryDTO) {
+        return UpdateHistory.builder()
+                .id(updateHistoryDTO.getId())
+                .labWorkID(updateHistoryDTO.getLabWorkId())
+                .user(userRepository.findByUsername(updateHistoryDTO.getUsername()).orElseThrow())
+                .action(updateHistoryDTO.getAction())
+                .actionTime(updateHistoryDTO.getActionTime())
+                .build();
+    }
+
     public List<LabWorkDTO> toLabWorkDTOList(List<LabWork> labWorkList) {
         return labWorkList.stream().map(this::convert).toList();
     }
@@ -108,6 +128,14 @@ public class ModelDTOConverter {
 
     public List<Discipline> toDisciplineList(List<DisciplineDTO> disciplineDTOList) {
         return disciplineDTOList.stream().map(this::convert).toList();
+    }
+
+    public List<UpdateHistoryDTO> toUpdateHistoryDTOList(List<UpdateHistory> updateHistoryList) {
+        return updateHistoryList.stream().map(this::convert).toList();
+    }
+
+    public List<UpdateHistory> toUpdateHistoryList(List<UpdateHistoryDTO> updateHistoryDTOList) {
+        return updateHistoryDTOList.stream().map(this::convert).toList();
     }
 
 }

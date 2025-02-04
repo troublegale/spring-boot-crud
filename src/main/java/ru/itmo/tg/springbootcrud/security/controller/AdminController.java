@@ -3,9 +3,11 @@ package ru.itmo.tg.springbootcrud.security.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.itmo.tg.springbootcrud.labwork.dto.UpdateHistoryDTO;
+import ru.itmo.tg.springbootcrud.labwork.service.UpdateHistoryService;
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeTicketDTO;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
-import ru.itmo.tg.springbootcrud.security.service.RoleChangeService;
+import ru.itmo.tg.springbootcrud.security.service.RoleChangeTicketService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
@@ -17,7 +19,8 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleChangeService roleChangeService;
+    private final RoleChangeTicketService roleChangeTicketService;
+    private final UpdateHistoryService updateHistoryService;
 
     @GetMapping("/users")
     public List<UserDTO> getUsers() {
@@ -31,22 +34,32 @@ public class AdminController {
 
     @GetMapping("/tickets")
     public List<RoleChangeTicketDTO> getRoleChangeTickets() {
-        return roleChangeService.getAllRoleChangeRequests();
+        return roleChangeTicketService.getAllRoleChangeRequests();
     }
 
     @GetMapping("/tickets/{id}")
     public RoleChangeTicketDTO getRoleChangeTicketById(@PathVariable Long id) {
-        return roleChangeService.getRoleChangeTicketById(id);
+        return roleChangeTicketService.getRoleChangeTicketById(id);
     }
 
     @PutMapping("/tickets/{id}/approve")
     public void approveRoleChangeTicket(@PathVariable Long id) {
-        roleChangeService.approveRoleChangeTicket(id, userService.getCurrentUser());
+        roleChangeTicketService.approveRoleChangeTicket(id, userService.getCurrentUser());
     }
 
     @PutMapping("/tickets/{id}/reject")
     public void rejectRoleChangeTicket(@PathVariable Long id) {
-        roleChangeService.rejectRoleChangeTicket(id, userService.getCurrentUser());
+        roleChangeTicketService.rejectRoleChangeTicket(id, userService.getCurrentUser());
+    }
+
+    @GetMapping("/lab-work-history")
+    public List<UpdateHistoryDTO> getAllUpdateHistory() {
+        return updateHistoryService.getAllUpdateHistory();
+    }
+
+    @GetMapping("/lab-work-history/{lab-id}")
+    public UpdateHistoryDTO getLabWorkUpdateHistory(@PathVariable(name = "lab-id") Long labId) {
+        return updateHistoryService.getLabWorkUpdateHistory(labId);
     }
 
 }

@@ -21,6 +21,8 @@ public class LabWorkDTO {
 
     private Coordinates coordinates;
 
+    private Date creationDate;
+
     private String description;
 
     private DisciplineDTO discipline;
