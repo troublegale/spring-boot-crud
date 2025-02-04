@@ -23,7 +23,7 @@ public class LabWorkController {
     public List<LabWorkDTO> getLabWorks(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20", name = "page-size") Integer pageSize,
-            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(defaultValue = "asc") String order,
             @RequestParam(defaultValue = "id") String sort) {
         return labWorkService.getLabWorks(page, pageSize, order, sort);
     }
