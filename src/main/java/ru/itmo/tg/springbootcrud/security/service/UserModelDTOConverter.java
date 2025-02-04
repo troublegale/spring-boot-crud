@@ -1,14 +1,13 @@
-package ru.itmo.tg.springbootcrud.security;
+package ru.itmo.tg.springbootcrud.security.service;
 
-
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
 import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.List;
 
-@Component
-public class ModelDTOConverter {
+@Service
+public class UserModelDTOConverter {
 
     public UserDTO convert(User user) {
         return UserDTO.builder()

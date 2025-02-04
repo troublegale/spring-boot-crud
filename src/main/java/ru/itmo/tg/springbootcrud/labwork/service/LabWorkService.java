@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.labwork.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
 import ru.itmo.tg.springbootcrud.labwork.model.*;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Action;

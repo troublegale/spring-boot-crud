@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.labwork;
+package ru.itmo.tg.springbootcrud.labwork.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,10 +9,8 @@ import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.LocationRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
-import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

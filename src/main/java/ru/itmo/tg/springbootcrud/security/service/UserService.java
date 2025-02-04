@@ -5,20 +5,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.security.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository repository;
-    private final ModelDTOConverter modelDTOConverter;
+    private final UserModelDTOConverter userModelDTOConverter;
 
     public void createUser(User user) {
         if (repository.existsByUsername(user.getUsername())) {
@@ -28,11 +26,11 @@ public class UserService {
     }
 
     public UserDTO getByUsername(String username) {
-        return modelDTOConverter.convert(getUserByUsername(username));
+        return userModelDTOConverter.convert(getUserByUsername(username));
     }
 
     public List<UserDTO> getAllUsers() {
-        return modelDTOConverter.convert(repository.findAll());
+        return userModelDTOConverter.convert(repository.findAll());
     }
 
     public User getCurrentUser() {
