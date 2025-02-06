@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.labwork.misc;
+package ru.itmo.tg.springbootcrud.labwork.websockets;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

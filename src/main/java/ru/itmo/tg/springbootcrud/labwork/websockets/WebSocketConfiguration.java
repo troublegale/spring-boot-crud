@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.labwork.misc;
+package ru.itmo.tg.springbootcrud.labwork.websockets;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

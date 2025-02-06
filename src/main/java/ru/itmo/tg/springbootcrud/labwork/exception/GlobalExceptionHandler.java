@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.labwork.misc;
+package ru.itmo.tg.springbootcrud.labwork.exception;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
