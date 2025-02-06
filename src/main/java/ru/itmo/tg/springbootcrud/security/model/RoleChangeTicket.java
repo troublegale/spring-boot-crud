@@ -22,7 +22,7 @@ public class RoleChangeTicket {
     private Long id;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @NotNull
     private User user;
 
@@ -37,7 +37,7 @@ public class RoleChangeTicket {
     private RoleChangeTicketStatus status;
 
     @JoinColumn(name = "resolver_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User resolver;
 
 }
