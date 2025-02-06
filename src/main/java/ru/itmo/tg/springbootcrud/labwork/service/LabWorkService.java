@@ -35,6 +35,8 @@ public class LabWorkService {
         return modelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow());
     }
 
+    //TODO implement websocket message sending for every change
+
     public void createLabWork(LabWorkDTO labWorkDTO) {
         LabWork labWork = modelDTOConverter.convert(labWorkDTO);
         labWorkRepository.save(labWork);

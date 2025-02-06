@@ -28,6 +28,8 @@ public class DisciplineService {
         return modelDTOConverter.convert(disciplineRepository.findById(id).orElseThrow());
     }
 
+    //TODO implement websocket message sending for every change
+
     public void createDiscipline(DisciplineDTO disciplineDTO) {
         Discipline discipline = modelDTOConverter.convert(disciplineDTO);
         disciplineRepository.save(discipline);

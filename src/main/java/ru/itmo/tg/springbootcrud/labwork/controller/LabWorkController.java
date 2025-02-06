@@ -17,8 +17,6 @@ public class LabWorkController {
     private final LabWorkService labWorkService;
     private final UserService userService;
 
-    // Default CRUD endpoints
-
     @GetMapping
     public List<LabWorkDTO> getLabWorks(
             @RequestParam(defaultValue = "1") Integer page,
@@ -47,8 +45,6 @@ public class LabWorkController {
     public void deleteLabWork(@PathVariable Long id) {
         labWorkService.deleteLabWork(id, userService.getCurrentUser());
     }
-
-    // PL/pgSQL function calls
 
     @DeleteMapping("/delete-by-minimal-point")
     public Boolean deleteLabWorkByMinimalPoint(@RequestParam(name = "p") Integer minimalPoint) {

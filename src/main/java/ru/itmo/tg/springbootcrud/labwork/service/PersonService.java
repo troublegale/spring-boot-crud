@@ -28,6 +28,8 @@ public class PersonService {
         return modelDTOConverter.convert(personRepository.findById(id).orElseThrow());
     }
 
+    //TODO implement websocket message sending for every change
+
     public void createPerson(PersonDTO personDTO) {
         Person person = modelDTOConverter.convert(personDTO);
         personRepository.save(person);
