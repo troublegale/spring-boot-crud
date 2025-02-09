@@ -34,6 +34,7 @@ public class User implements UserDetails {
 
     @Column(name = "password", nullable = false)
     @NotNull
+    @Size(min = 8)
     private String password;
 
     @Column(name = "role", nullable = false)

@@ -4,7 +4,7 @@ volumes:
   postgresql_data:
 
 services:
-  is_lab_1:
+  lab-work-database:
     image: postgres:15-alpine
     ports:
       - "5432:5432"
@@ -15,4 +15,4 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    container_name: is_lab_1
+    container_name: lab-work-database

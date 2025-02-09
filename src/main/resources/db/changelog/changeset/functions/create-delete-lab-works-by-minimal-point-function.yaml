@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-delete-lab-works-by-minimal-point-function
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/functions/create-delete-lab-works-by-minimal-point-function.sql

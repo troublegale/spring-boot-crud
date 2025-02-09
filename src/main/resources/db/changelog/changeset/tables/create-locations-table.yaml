@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-locations-table
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/tables/create-locations-table.sql

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface LabWorkRepository extends JpaRepository<LabWork, Long> {
 
-    @Query(nativeQuery = true, value = "select delete_lab_work_by_minimal_point(:p, :uId)")
+    @Query(nativeQuery = true, value = "select delete_lab_works_by_minimal_point(:p, :uId)")
     Boolean deleteLabWorkByMinimalPoint(Integer p, Long uId);
 
     @Query(nativeQuery = true, value = "select get_count_by_author_id(:authorId)")
@@ -20,10 +20,10 @@ public interface LabWorkRepository extends JpaRepository<LabWork, Long> {
             value = "select * from get_lab_works_with_description_containing(:substring, :page, :pageSize)")
     List<LabWork> getLabWorksWithDescriptionContaining(String substring, Integer page, Integer pageSize);
 
-    @Query(nativeQuery = true, value = "select adjust_lab_work_difficulty_by(:labId, :steps, :diffVals)")
+    @Query(nativeQuery = true, value = "select adjust_lab_work_difficulty(:labId, :steps, :diffVals)")
     String adjustDifficulty(long labId, int steps, String[] diffVals);
 
-    @Query(nativeQuery = true, value = "select * from copy_lab_to_discipline(:labId, :disId, :uId)")
+    @Query(nativeQuery = true, value = "select * from copy_lab_work_to_discipline(:labId, :disId, :uId)")
     LabWork copyLabWorkToDiscipline(long labId, long disId, long uId);
 
 }

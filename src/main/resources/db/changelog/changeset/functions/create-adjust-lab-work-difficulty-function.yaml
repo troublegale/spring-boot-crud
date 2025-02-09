@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-adjust-lab-work-difficulty-function
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/functions/create-adjust-lab-work-difficulty-function.sql

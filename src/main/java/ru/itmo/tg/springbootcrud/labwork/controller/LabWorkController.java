@@ -1,5 +1,7 @@
 package ru.itmo.tg.springbootcrud.labwork.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
@@ -19,10 +21,10 @@ public class LabWorkController {
 
     @GetMapping
     public List<LabWorkDTO> getLabWorks(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20", name = "page-size") Integer pageSize,
-            @RequestParam(defaultValue = "asc") String order,
-            @RequestParam(defaultValue = "id") String sort) {
+            @RequestParam(defaultValue = "1", required = false) Integer page,
+            @RequestParam(defaultValue = "20", name = "page-size", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "asc", required = false) String order,
+            @RequestParam(defaultValue = "id", required = false) String sort) {
         return labWorkService.getLabWorks(page, pageSize, order, sort);
     }
 
@@ -47,7 +49,7 @@ public class LabWorkController {
     }
 
     @DeleteMapping("/delete-by-minimal-point")
-    public Boolean deleteLabWorkByMinimalPoint(@RequestParam(name = "p") Integer minimalPoint) {
+    public Boolean deleteLabWorkByMinimalPoint(@RequestParam(name = "point") Integer minimalPoint) {
         return labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
     }
 
@@ -59,8 +61,8 @@ public class LabWorkController {
     @GetMapping("/description-contains")
     public List<LabWorkDTO> getLabWorksWithDescriptionContaining(
             @RequestParam String substring,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20", name = "page-size") Integer pageSize) {
+            @RequestParam(defaultValue = "1", required = false) Integer page,
+            @RequestParam(defaultValue = "20", name = "page-size", required = false) Integer pageSize) {
         return labWorkService.getLabWorksWithDescriptionContaining(substring, page, pageSize);
     }
 

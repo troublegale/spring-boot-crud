@@ -88,6 +88,7 @@ public class ModelDTOConverter {
     }
 
     public LabWork convert(LabWorkDTO labWorkDTO) {
+        System.out.println(labWorkDTO.getId());
         return LabWork.builder()
                 .id(labWorkDTO.getId())
                 .name(labWorkDTO.getName())

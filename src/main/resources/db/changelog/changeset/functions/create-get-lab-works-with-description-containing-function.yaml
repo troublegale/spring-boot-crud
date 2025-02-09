@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-get-lab-works-with-description-containing-function
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/functions/create-get-lab-works-with-description-containing-function.sql

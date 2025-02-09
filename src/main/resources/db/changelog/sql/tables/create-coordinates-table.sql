@@ -1,0 +1,6 @@
+CREATE TABLE coordinates
+(
+    id SERIAL PRIMARY KEY,
+    x  DOUBLE PRECISION CHECK (x <= 599),
+    y  BIGINT NOT NULL
+);

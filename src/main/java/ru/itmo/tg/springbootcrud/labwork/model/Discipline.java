@@ -30,7 +30,7 @@ public class Discipline {
     private int lectureHours;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @NotNull
     private User owner;
 

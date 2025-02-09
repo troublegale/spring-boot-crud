@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-copy-lab-work-to-discipline-function
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/functions/create-copy-lab-work-to-discipline-function.sql
