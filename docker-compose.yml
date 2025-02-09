@@ -10,9 +10,17 @@ services:
       - "5432:5432"
     restart: always
     volumes:
-      - postgresql_data:/var/lib/postgres/data
+      - postgresql_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     container_name: lab-work-database
+
+  lab-work-app:
+    build: .
+    ports:
+      - "8383:8383"
+    depends_on:
+      - lab-work-database
+    container_name: lab-work-app
