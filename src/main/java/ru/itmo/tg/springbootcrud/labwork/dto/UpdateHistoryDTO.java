@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 public class UpdateHistoryDTO {
 
-    private Long id;
-
     private long labWorkId;
 
     private String username;

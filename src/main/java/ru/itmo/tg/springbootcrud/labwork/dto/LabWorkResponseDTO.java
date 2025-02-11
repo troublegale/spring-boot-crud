@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LabWorkDTO {
+public class LabWorkResponseDTO {
 
     private Long id;
 
@@ -25,15 +25,15 @@ public class LabWorkDTO {
 
     private String description;
 
-    private DisciplineDTO discipline;
+    private DisciplineResponseDTO discipline;
 
     private Difficulty difficulty;
 
-    private int minimalPoint;
+    private Integer minimalPoint;
 
-    private float averagePoint;
+    private Float averagePoint;
 
-    private PersonDTO author;
+    private PersonResponseDTO author;
 
     private String ownerUsername;
 

@@ -12,9 +12,9 @@ import ru.itmo.tg.springbootcrud.labwork.model.enums.Country;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonDTO {
+public class PersonRequestDTO {
 
-    private Long id;
+    private String name;
 
     private Color eyeColor;
 
@@ -25,7 +25,5 @@ public class PersonDTO {
     private String passportId;
 
     private Country nationality;
-
-    private String ownerUsername;
 
 }

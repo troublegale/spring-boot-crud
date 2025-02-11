@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DisciplineDTO {
+public class DisciplineResponseDTO {
 
     private Long id;
 
     private String name;
 
-    private int lectureHours;
+    private Integer lectureHours;
 
     private String ownerUsername;
 
