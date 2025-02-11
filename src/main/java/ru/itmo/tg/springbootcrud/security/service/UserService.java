@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.itmo.tg.springbootcrud.labwork.exception.UsernameTakenException;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
@@ -20,7 +21,7 @@ public class UserService {
 
     public void createUser(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("User already exists");
+            throw new UsernameTakenException("Username " + user.getUsername() + " already taken");
         }
         repository.save(user);
     }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
+import ru.itmo.tg.springbootcrud.labwork.exception.DisciplineNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.exception.InsufficientPermissionsException;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
@@ -24,13 +25,17 @@ public class DisciplineService {
 
     public List<DisciplineResponseDTO> getDisciplines(
             Integer pageNumber, Integer pageSize, String order, String sortCol) {
+        if (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Order must be asc or desc");
+        }
         Page<Discipline> page = disciplineRepository.findAll(PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
         return modelDTOConverter.toDisciplineResponseDTOList(page.getContent());
     }
 
     public DisciplineResponseDTO getDisciplineById(Long id) {
-        return modelDTOConverter.convert(disciplineRepository.findById(id).orElseThrow());
+        return modelDTOConverter.convert(
+                disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new));
     }
 
     //TODO implement websocket message sending for every change
@@ -42,7 +47,7 @@ public class DisciplineService {
     }
 
     public DisciplineResponseDTO updateDiscipline(Long id, DisciplineRequestDTO disciplineDTO, User user) {
-        Discipline discipline = disciplineRepository.findById(id).orElseThrow();
+        Discipline discipline = disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
             throw new InsufficientPermissionsException("no rights to edit Discipline #" + id);
         }
@@ -53,7 +58,7 @@ public class DisciplineService {
     }
 
     public void deleteDiscipline(Long id, User user) {
-        Discipline discipline = disciplineRepository.findById(id).orElseThrow();
+        Discipline discipline = disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
             throw new InsufficientPermissionsException("no rights to delete Discipline #" + id);
         }

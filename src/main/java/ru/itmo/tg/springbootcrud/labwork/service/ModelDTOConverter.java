@@ -43,6 +43,7 @@ public class ModelDTOConverter {
     public PersonResponseDTO convert(Person person) {
         return PersonResponseDTO.builder()
                 .id(person.getId())
+                .name(person.getName())
                 .eyeColor(person.getEyeColor())
                 .hairColor(person.getHairColor())
                 .location(person.getLocation())
@@ -93,11 +94,11 @@ public class ModelDTOConverter {
                 .name(dto.getName())
                 .coordinates(dto.getCoordinates())
                 .description(dto.getDescription())
-                .discipline(convert(dto.getDiscipline(), owner))
+                .discipline(dto.getDiscipline() == null ? null : convert(dto.getDiscipline(), owner))
                 .difficulty(dto.getDifficulty())
                 .minimalPoint(dto.getMinimalPoint())
                 .averagePoint(dto.getAveragePoint())
-                .author(convert(dto.getAuthor(), owner))
+                .author(dto.getAuthor() == null ? null : convert(dto.getAuthor(), owner))
                 .owner(owner)
                 .build();
     }

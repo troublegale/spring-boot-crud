@@ -3,6 +3,7 @@ package ru.itmo.tg.springbootcrud.labwork.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.UpdateHistoryDTO;
+import ru.itmo.tg.springbootcrud.labwork.exception.LabWorkNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class UpdateHistoryService {
     }
 
     public UpdateHistoryDTO getLabWorkUpdateHistory(long labId) {
-        return modelDTOConverter.convert(updateHistoryRepository.findByLabWorkID(labId).orElseThrow());
+        return modelDTOConverter.convert(
+                updateHistoryRepository.findByLabWorkID(labId).orElseThrow(LabWorkNotFoundException::new));
     }
 
 }

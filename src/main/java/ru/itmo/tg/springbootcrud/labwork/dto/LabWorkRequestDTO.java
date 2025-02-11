@@ -21,6 +21,8 @@ public class LabWorkRequestDTO {
 
     private DisciplineRequestDTO discipline;
 
+    private Long disciplineId;
+
     private Difficulty difficulty;
 
     private Integer minimalPoint;
@@ -28,5 +30,7 @@ public class LabWorkRequestDTO {
     private Float averagePoint;
 
     private PersonRequestDTO author;
+
+    private Long authorId;
 
 }

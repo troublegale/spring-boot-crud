@@ -9,14 +9,16 @@ import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonRequestDTO;
-import ru.itmo.tg.springbootcrud.labwork.exception.InsufficientPermissionsException;
+import ru.itmo.tg.springbootcrud.labwork.exception.*;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.model.UpdateHistory;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Action;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
+import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.LabWorkRepository;
+import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
@@ -29,6 +31,8 @@ import java.util.List;
 public class LabWorkService {
 
     private final LabWorkRepository labWorkRepository;
+    private final DisciplineRepository disciplineRepository;
+    private final PersonRepository personRepository;
     private final UpdateHistoryRepository updateHistoryRepository;
     private final ModelDTOConverter modelDTOConverter;
 
@@ -39,20 +43,34 @@ public class LabWorkService {
     }
 
     public LabWorkResponseDTO getLabWorkById(Long id) {
-        return modelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow());
+        return modelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new));
     }
 
     //TODO implement websocket message sending for every change
 
     public LabWorkResponseDTO createLabWork(LabWorkRequestDTO labWorkDTO, User user) {
+        if ((labWorkDTO.getDiscipline() == null && labWorkDTO.getDisciplineId() == null)
+                || (labWorkDTO.getAuthor() == null && labWorkDTO.getAuthorId() == null)) {
+            throw new AbsentNestedObjectsException();
+        }
         LabWork labWork = modelDTOConverter.convert(labWorkDTO, user);
+        if (labWork.getDiscipline() == null) {
+            labWork.setDiscipline(disciplineRepository.findById(
+                    labWorkDTO.getDisciplineId()).orElseThrow(DisciplineNotFoundException::new));
+        }
+        if (labWork.getAuthor() == null) {
+            labWork.setAuthor(personRepository.findById(
+                    labWorkDTO.getAuthorId()).orElseThrow(PersonNotFoundException::new));
+        } else if (personRepository.existsByPassportID(labWork.getAuthor().getPassportID())) {
+            throw new UniqueAttributeException("this passport already exists");
+        }
         labWork = labWorkRepository.save(labWork);
         updateHistoryRepository.save(updateEntry(labWork.getId(), Action.CREATE, user));
         return modelDTOConverter.convert(labWork);
     }
 
     public LabWorkResponseDTO updateLabWork(Long id, LabWorkRequestDTO labWorkDTO, User user) {
-        LabWork labWork = labWorkRepository.findById(id).orElseThrow();
+        LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
             throw new InsufficientPermissionsException("no rights to edit LabWork #" + id);
         }
@@ -63,28 +81,44 @@ public class LabWorkService {
         labWork.setMinimalPoint(labWorkDTO.getMinimalPoint());
         labWork.setAveragePoint(labWorkDTO.getAveragePoint());
 
-        Discipline discipline = labWork.getDiscipline();
-        if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
-            throw new InsufficientPermissionsException("no rights to edit Discipline #" + discipline.getId());
+        if (labWorkDTO.getDisciplineId() != null) {
+            labWork.setDiscipline(disciplineRepository.findById(
+                    labWorkDTO.getDisciplineId()).orElseThrow(DisciplineNotFoundException::new));
         }
-        DisciplineRequestDTO disciplineDTO = labWorkDTO.getDiscipline();
-        discipline.setName(disciplineDTO.getName());
-        discipline.setLectureHours(disciplineDTO.getLectureHours());
-
-        Person person = labWork.getAuthor();
-        if (user.getRole() != Role.ROLE_ADMIN && !person.getOwner().equals(user)) {
-            throw new InsufficientPermissionsException("no rights to edit Person #" + person.getId());
+        if (labWorkDTO.getDiscipline() != null) {
+            Discipline discipline = labWork.getDiscipline();
+            if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
+                throw new InsufficientPermissionsException("no rights to edit Discipline #" + discipline.getId());
+            }
+            DisciplineRequestDTO disciplineDTO = labWorkDTO.getDiscipline();
+            discipline.setName(disciplineDTO.getName());
+            discipline.setLectureHours(disciplineDTO.getLectureHours());
+            labWork.setDiscipline(discipline);
         }
-        PersonRequestDTO personDTO = labWorkDTO.getAuthor();
-        person.setName(personDTO.getName());
-        person.setEyeColor(personDTO.getEyeColor());
-        person.setHairColor(personDTO.getHairColor());
-        person.setLocation(personDTO.getLocation());
-        person.setPassportID(personDTO.getPassportId());
-        person.setNationality(personDTO.getNationality());
 
-        labWork.setDiscipline(discipline);
-        labWork.setAuthor(person);
+        if (labWorkDTO.getAuthorId() != null) {
+            labWork.setAuthor(personRepository.findById(
+                    labWorkDTO.getAuthorId()).orElseThrow(PersonNotFoundException::new));
+        }
+        if (labWorkDTO.getAuthor() != null) {
+            Person person = labWork.getAuthor();
+            if (user.getRole() != Role.ROLE_ADMIN && !person.getOwner().equals(user)) {
+                throw new InsufficientPermissionsException("no rights to edit Person #" + person.getId());
+            }
+            if (!person.getPassportID().equals(labWorkDTO.getAuthor().getPassportId())) {
+                if (personRepository.existsByPassportID(labWorkDTO.getAuthor().getPassportId())) {
+                    throw new UniqueAttributeException("this passport already exists");
+                }
+            }
+            PersonRequestDTO personDTO = labWorkDTO.getAuthor();
+            person.setName(personDTO.getName());
+            person.setEyeColor(personDTO.getEyeColor());
+            person.setHairColor(personDTO.getHairColor());
+            person.setLocation(personDTO.getLocation());
+            person.setPassportID(personDTO.getPassportId());
+            person.setNationality(personDTO.getNationality());
+            labWork.setAuthor(person);
+        }
 
         labWork = labWorkRepository.save(labWork);
         updateHistoryRepository.save(updateEntry(id, Action.UPDATE, user));
@@ -92,7 +126,7 @@ public class LabWorkService {
     }
 
     public void deleteLabWork(Long id, User user) {
-        LabWork labWork = labWorkRepository.findById(id).orElseThrow();
+        LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
             throw new InsufficientPermissionsException("no rights to edit LabWork #" + id);
         }
@@ -119,7 +153,7 @@ public class LabWorkService {
     }
 
     public LabWorkResponseDTO adjustDifficulty(Long id, Integer steps, User user) {
-        LabWork labWork = labWorkRepository.findById(id).orElseThrow();
+        LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
             throw new InsufficientPermissionsException("no rights to edit LabWork #" + id);
         }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.exception.InsufficientPermissionsException;
+import ru.itmo.tg.springbootcrud.labwork.exception.PersonNotFoundException;
+import ru.itmo.tg.springbootcrud.labwork.exception.UniqueAttributeException;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.security.model.User;
@@ -29,21 +31,29 @@ public class PersonService {
     }
 
     public PersonResponseDTO getPersonById(Long id) {
-        return modelDTOConverter.convert(personRepository.findById(id).orElseThrow());
+        return modelDTOConverter.convert(personRepository.findById(id).orElseThrow(PersonNotFoundException::new));
     }
 
     //TODO implement websocket message sending for every change
 
     public PersonResponseDTO createPerson(PersonRequestDTO personDTO, User user) {
+        if (personRepository.existsByPassportID(personDTO.getPassportId())) {
+            throw new UniqueAttributeException("this passport already exists");
+        }
         Person person = modelDTOConverter.convert(personDTO, user);
         person = personRepository.save(person);
         return modelDTOConverter.convert(person);
     }
 
     public PersonResponseDTO updatePerson(Long id, PersonRequestDTO personDTO, User user) {
-        Person person = personRepository.findById(id).orElseThrow();
+        Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !user.equals(person.getOwner())) {
             throw new InsufficientPermissionsException("no rights to edit Person #" + id);
+        }
+        if (!person.getPassportID().equals(personDTO.getPassportId())) {
+            if (personRepository.existsByPassportID(personDTO.getPassportId())) {
+                throw new UniqueAttributeException("this passport already exists");
+            }
         }
         person.setName(personDTO.getName());
         person.setEyeColor(personDTO.getEyeColor());
@@ -56,7 +66,7 @@ public class PersonService {
     }
 
     public void deletePerson(Long id, User user) {
-        Person person = personRepository.findById(id).orElseThrow();
+        Person person = personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !user.equals(person.getOwner())) {
             throw new InsufficientPermissionsException("no rights to delete Person #" + id);
         }

@@ -6,4 +6,7 @@ import ru.itmo.tg.springbootcrud.labwork.model.Person;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+
+    Boolean existsByPassportID(String passportID);
+
 }
