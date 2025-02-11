@@ -2,15 +2,12 @@ package ru.itmo.tg.springbootcrud.labwork.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineDTO;
-import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
-import ru.itmo.tg.springbootcrud.labwork.dto.PersonDTO;
-import ru.itmo.tg.springbootcrud.labwork.dto.UpdateHistoryDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.*;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.model.UpdateHistory;
-import ru.itmo.tg.springbootcrud.security.repository.UserRepository;
+import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.List;
 
@@ -18,10 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ModelDTOConverter {
 
-    private final UserRepository userRepository;
-
-    public DisciplineDTO convert(Discipline discipline) {
-        return DisciplineDTO.builder()
+    public DisciplineResponseDTO convert(Discipline discipline) {
+        return DisciplineResponseDTO.builder()
                 .id(discipline.getId())
                 .name(discipline.getName())
                 .lectureHours(discipline.getLectureHours())
@@ -29,8 +24,24 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public PersonDTO convert(Person person) {
-        return PersonDTO.builder()
+    public Discipline convert(DisciplineRequestDTO dto, User owner) {
+        return Discipline.builder()
+                .name(dto.getName())
+                .lectureHours(dto.getLectureHours())
+                .owner(owner)
+                .build();
+    }
+
+    public List<DisciplineResponseDTO> toDisciplineResponseDTOList(List<Discipline> disciplineList) {
+        return disciplineList.stream().map(this::convert).toList();
+    }
+
+    public List<Discipline> toDisciplineList(List<DisciplineRequestDTO> dtoList, User owner) {
+        return dtoList.stream().map(dto -> convert(dto, owner)).toList();
+    }
+
+    public PersonResponseDTO convert(Person person) {
+        return PersonResponseDTO.builder()
                 .id(person.getId())
                 .eyeColor(person.getEyeColor())
                 .hairColor(person.getHairColor())
@@ -41,11 +52,32 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public LabWorkDTO convert(LabWork labWork) {
-        return LabWorkDTO.builder()
+    public Person convert(PersonRequestDTO dto, User owner) {
+        return Person.builder()
+                .name(dto.getName())
+                .eyeColor(dto.getEyeColor())
+                .hairColor(dto.getHairColor())
+                .location(dto.getLocation())
+                .passportID(dto.getPassportId())
+                .nationality(dto.getNationality())
+                .owner(owner)
+                .build();
+    }
+
+    public List<PersonResponseDTO> toPersonResponseDTOList(List<Person> personList) {
+        return personList.stream().map(this::convert).toList();
+    }
+
+    public List<Person> toPersonList(List<PersonRequestDTO> dtoList, User owner) {
+        return dtoList.stream().map(dto -> convert(dto, owner)).toList();
+    }
+
+    public LabWorkResponseDTO convert(LabWork labWork) {
+        return LabWorkResponseDTO.builder()
                 .id(labWork.getId())
                 .name(labWork.getName())
                 .coordinates(labWork.getCoordinates())
+                .creationDate(labWork.getCreationDate())
                 .description(labWork.getDescription())
                 .discipline(convert(labWork.getDiscipline()))
                 .difficulty(labWork.getDifficulty())
@@ -56,9 +88,30 @@ public class ModelDTOConverter {
                 .build();
     }
 
+    public LabWork convert(LabWorkRequestDTO dto, User owner) {
+        return LabWork.builder()
+                .name(dto.getName())
+                .coordinates(dto.getCoordinates())
+                .description(dto.getDescription())
+                .discipline(convert(dto.getDiscipline(), owner))
+                .difficulty(dto.getDifficulty())
+                .minimalPoint(dto.getMinimalPoint())
+                .averagePoint(dto.getAveragePoint())
+                .author(convert(dto.getAuthor(), owner))
+                .owner(owner)
+                .build();
+    }
+
+    public List<LabWorkResponseDTO> toLabWorkResponseDTOList(List<LabWork> labWorkList) {
+        return labWorkList.stream().map(this::convert).toList();
+    }
+
+    public List<LabWork> toLabWorkList(List<LabWorkRequestDTO> dtoList, User owner) {
+        return dtoList.stream().map(dto -> convert(dto, owner)).toList();
+    }
+
     public UpdateHistoryDTO convert(UpdateHistory updateHistory) {
         return UpdateHistoryDTO.builder()
-                .id(updateHistory.getId())
                 .labWorkId(updateHistory.getLabWorkID())
                 .username(updateHistory.getUser().getUsername())
                 .action(updateHistory.getAction())
@@ -66,83 +119,8 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public Discipline convert(DisciplineDTO disciplineDTO) {
-        return Discipline.builder()
-                .id(disciplineDTO.getId())
-                .name(disciplineDTO.getName())
-                .lectureHours(disciplineDTO.getLectureHours())
-                .owner(userRepository.findByUsername(disciplineDTO.getOwnerUsername()).orElseThrow())
-                .build();
-    }
-
-    public Person convert(PersonDTO personDTO) {
-        return Person.builder()
-                .id(personDTO.getId())
-                .eyeColor(personDTO.getEyeColor())
-                .hairColor(personDTO.getHairColor())
-                .location(personDTO.getLocation())
-                .passportID(personDTO.getPassportId())
-                .nationality(personDTO.getNationality())
-                .owner(userRepository.findByUsername(personDTO.getOwnerUsername()).orElseThrow())
-                .build();
-    }
-
-    public LabWork convert(LabWorkDTO labWorkDTO) {
-        System.out.println(labWorkDTO.getId());
-        return LabWork.builder()
-                .id(labWorkDTO.getId())
-                .name(labWorkDTO.getName())
-                .coordinates(labWorkDTO.getCoordinates())
-                .description(labWorkDTO.getDescription())
-                .discipline(convert(labWorkDTO.getDiscipline()))
-                .difficulty(labWorkDTO.getDifficulty())
-                .minimalPoint(labWorkDTO.getMinimalPoint())
-                .averagePoint(labWorkDTO.getAveragePoint())
-                .author(convert(labWorkDTO.getAuthor()))
-                .owner(userRepository.findByUsername(labWorkDTO.getOwnerUsername()).orElseThrow())
-                .build();
-    }
-
-    public UpdateHistory convert(UpdateHistoryDTO updateHistoryDTO) {
-        return UpdateHistory.builder()
-                .id(updateHistoryDTO.getId())
-                .labWorkID(updateHistoryDTO.getLabWorkId())
-                .user(userRepository.findByUsername(updateHistoryDTO.getUsername()).orElseThrow())
-                .action(updateHistoryDTO.getAction())
-                .actionTime(updateHistoryDTO.getActionTime())
-                .build();
-    }
-
-    public List<LabWorkDTO> toLabWorkDTOList(List<LabWork> labWorkList) {
-        return labWorkList.stream().map(this::convert).toList();
-    }
-
-    public List<LabWork> toLabWorkList(List<LabWorkDTO> labWorkDTOList) {
-        return labWorkDTOList.stream().map(this::convert).toList();
-    }
-
-    public List<PersonDTO> toPersonDTOList(List<Person> personList) {
-        return personList.stream().map(this::convert).toList();
-    }
-
-    public List<Person> toPersonList(List<PersonDTO> personDTOList) {
-        return personDTOList.stream().map(this::convert).toList();
-    }
-
-    public List<DisciplineDTO> toDisciplineDTOList(List<Discipline> disciplineList) {
-        return disciplineList.stream().map(this::convert).toList();
-    }
-
-    public List<Discipline> toDisciplineList(List<DisciplineDTO> disciplineDTOList) {
-        return disciplineDTOList.stream().map(this::convert).toList();
-    }
-
     public List<UpdateHistoryDTO> toUpdateHistoryDTOList(List<UpdateHistory> updateHistoryList) {
         return updateHistoryList.stream().map(this::convert).toList();
-    }
-
-    public List<UpdateHistory> toUpdateHistoryList(List<UpdateHistoryDTO> updateHistoryDTOList) {
-        return updateHistoryDTOList.stream().map(this::convert).toList();
     }
 
 }

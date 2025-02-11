@@ -2,8 +2,10 @@ package ru.itmo.tg.springbootcrud.labwork.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.service.DisciplineService;
+import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
 
@@ -13,9 +15,10 @@ import java.util.List;
 public class DisciplineController {
 
     private final DisciplineService disciplineService;
+    private final UserService userService;
 
     @GetMapping
-    public List<DisciplineDTO> getDisciplines(
+    public List<DisciplineResponseDTO> getDisciplines(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20", name = "page-size") Integer pageSize,
             @RequestParam(defaultValue = "asc") String order,
@@ -24,23 +27,24 @@ public class DisciplineController {
     }
 
     @GetMapping("/{id}")
-    public DisciplineDTO getDisciplineById(@PathVariable Long id) {
+    public DisciplineResponseDTO getDisciplineById(@PathVariable Long id) {
         return disciplineService.getDisciplineById(id);
     }
 
     @PostMapping("/create")
-    public void createDiscipline(@RequestBody DisciplineDTO disciplineDTO) {
-        disciplineService.createDiscipline(disciplineDTO);
+    public DisciplineResponseDTO createDiscipline(@RequestBody DisciplineRequestDTO disciplineDTO) {
+        return disciplineService.createDiscipline(disciplineDTO, userService.getCurrentUser());
     }
 
     @PutMapping("/{id}/update")
-    public void updateDiscipline(@PathVariable Long id, @RequestBody DisciplineDTO disciplineDTO) {
-        disciplineService.updateDiscipline(id, disciplineDTO);
+    public DisciplineResponseDTO updateDiscipline(@PathVariable Long id,
+                                                  @RequestBody DisciplineRequestDTO disciplineDTO) {
+        return disciplineService.updateDiscipline(id, disciplineDTO, userService.getCurrentUser());
     }
 
     @DeleteMapping("/{id}/delete")
     public void deleteDiscipline(@PathVariable Long id) {
-        disciplineService.deleteDiscipline(id);
+        disciplineService.deleteDiscipline(id, userService.getCurrentUser());
     }
 
 }

@@ -1,11 +1,9 @@
 package ru.itmo.tg.springbootcrud.labwork.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkDTO;
-import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
+import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.service.LabWorkService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
@@ -20,7 +18,7 @@ public class LabWorkController {
     private final UserService userService;
 
     @GetMapping
-    public List<LabWorkDTO> getLabWorks(
+    public List<LabWorkResponseDTO> getLabWorks(
             @RequestParam(defaultValue = "1", required = false) Integer page,
             @RequestParam(defaultValue = "20", name = "page-size", required = false) Integer pageSize,
             @RequestParam(defaultValue = "asc", required = false) String order,
@@ -29,18 +27,18 @@ public class LabWorkController {
     }
 
     @GetMapping("/{id}")
-    public LabWorkDTO getLabWorkById(@PathVariable Long id) {
+    public LabWorkResponseDTO getLabWorkById(@PathVariable Long id) {
         return labWorkService.getLabWorkById(id);
     }
 
     @PostMapping("/create")
-    public void createLabWork(@RequestBody LabWorkDTO labWorkDTO) {
-        labWorkService.createLabWork(labWorkDTO);
+    public LabWorkResponseDTO createLabWork(@RequestBody LabWorkRequestDTO labWorkDTO) {
+        return labWorkService.createLabWork(labWorkDTO, userService.getCurrentUser());
     }
 
     @PutMapping("/{id}/update")
-    public void updateLabWork(@PathVariable Long id, @RequestBody LabWorkDTO labWorkDTO) {
-        labWorkService.updateLabWork(id, labWorkDTO, userService.getCurrentUser());
+    public LabWorkResponseDTO updateLabWork(@PathVariable Long id, @RequestBody LabWorkRequestDTO labWorkDTO) {
+        return labWorkService.updateLabWork(id, labWorkDTO, userService.getCurrentUser());
     }
 
     @DeleteMapping("/{id}/delete")
@@ -49,7 +47,7 @@ public class LabWorkController {
     }
 
     @DeleteMapping("/delete-by-minimal-point")
-    public Boolean deleteLabWorkByMinimalPoint(@RequestParam(name = "point") Integer minimalPoint) {
+    public String deleteLabWorkByMinimalPoint(@RequestParam(name = "point") Integer minimalPoint) {
         return labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
     }
 
@@ -59,7 +57,7 @@ public class LabWorkController {
     }
 
     @GetMapping("/description-contains")
-    public List<LabWorkDTO> getLabWorksWithDescriptionContaining(
+    public List<LabWorkResponseDTO> getLabWorksWithDescriptionContaining(
             @RequestParam String substring,
             @RequestParam(defaultValue = "1", required = false) Integer page,
             @RequestParam(defaultValue = "20", name = "page-size", required = false) Integer pageSize) {
@@ -67,13 +65,13 @@ public class LabWorkController {
     }
 
     @PutMapping("/{id}/adjust-difficulty")
-    public Difficulty adjustDifficulty(@PathVariable Long id, @RequestParam Integer by) {
-        return labWorkService.adjustDifficulty(id, by);
+    public LabWorkResponseDTO adjustDifficulty(@PathVariable Long id, @RequestParam Integer by) {
+        return labWorkService.adjustDifficulty(id, by, userService.getCurrentUser());
     }
 
     @PostMapping("/{id}/copy-to-discipline")
-    public LabWorkDTO copyLabWorkToDiscipline(@PathVariable Long id,
-                                              @RequestParam(name = "discipline-id") Long disciplineId) {
+    public LabWorkResponseDTO copyLabWorkToDiscipline(@PathVariable Long id,
+                                                      @RequestParam(name = "discipline-id") Long disciplineId) {
         return labWorkService.copyLabWorkToDiscipline(id, disciplineId, userService.getCurrentUser());
     }
 

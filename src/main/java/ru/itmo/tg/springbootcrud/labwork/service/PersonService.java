@@ -5,9 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.itmo.tg.springbootcrud.labwork.dto.PersonDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.PersonRequestDTO;
+import ru.itmo.tg.springbootcrud.labwork.dto.PersonResponseDTO;
+import ru.itmo.tg.springbootcrud.labwork.exception.InsufficientPermissionsException;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
+import ru.itmo.tg.springbootcrud.security.model.User;
+import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
 import java.util.List;
 
@@ -18,29 +22,44 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final ModelDTOConverter modelDTOConverter;
 
-    public List<PersonDTO> getPersons(Integer pageNumber, Integer pageSize, String order, String sortCol) {
+    public List<PersonResponseDTO> getPersons(Integer pageNumber, Integer pageSize, String order, String sortCol) {
         Page<Person> page = personRepository.findAll(PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
-        return modelDTOConverter.toPersonDTOList(page.getContent());
+        return modelDTOConverter.toPersonResponseDTOList(page.getContent());
     }
 
-    public PersonDTO getPersonById(Long id) {
+    public PersonResponseDTO getPersonById(Long id) {
         return modelDTOConverter.convert(personRepository.findById(id).orElseThrow());
     }
 
     //TODO implement websocket message sending for every change
 
-    public void createPerson(PersonDTO personDTO) {
-        Person person = modelDTOConverter.convert(personDTO);
-        personRepository.save(person);
+    public PersonResponseDTO createPerson(PersonRequestDTO personDTO, User user) {
+        Person person = modelDTOConverter.convert(personDTO, user);
+        person = personRepository.save(person);
+        return modelDTOConverter.convert(person);
     }
 
-    public void updatePerson(Long id, PersonDTO personDTO) {
-        personDTO.setId(id);
-        personRepository.save(modelDTOConverter.convert(personDTO));
+    public PersonResponseDTO updatePerson(Long id, PersonRequestDTO personDTO, User user) {
+        Person person = personRepository.findById(id).orElseThrow();
+        if (user.getRole() != Role.ROLE_ADMIN && !user.equals(person.getOwner())) {
+            throw new InsufficientPermissionsException("no rights to edit Person #" + id);
+        }
+        person.setName(personDTO.getName());
+        person.setEyeColor(personDTO.getEyeColor());
+        person.setHairColor(personDTO.getHairColor());
+        person.setLocation(personDTO.getLocation());
+        person.setPassportID(personDTO.getPassportId());
+        person.setNationality(personDTO.getNationality());
+        person = personRepository.save(person);
+        return modelDTOConverter.convert(person);
     }
 
-    public void deletePerson(Long id) {
+    public void deletePerson(Long id, User user) {
+        Person person = personRepository.findById(id).orElseThrow();
+        if (user.getRole() != Role.ROLE_ADMIN && !user.equals(person.getOwner())) {
+            throw new InsufficientPermissionsException("no rights to delete Person #" + id);
+        }
         personRepository.deleteById(id);
     }
 
