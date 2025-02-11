@@ -42,10 +42,10 @@ public class SecurityConfiguration {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/person").permitAll()
+                        .requestMatchers("/persons", "persons/{id}").permitAll()
                         .requestMatchers("/lab-works", "/lab-works/{id}").permitAll()
+                        .requestMatchers("/disciplines").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())

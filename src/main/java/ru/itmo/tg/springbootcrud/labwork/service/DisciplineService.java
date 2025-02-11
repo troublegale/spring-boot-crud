@@ -38,8 +38,6 @@ public class DisciplineService {
                 disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new));
     }
 
-    //TODO implement websocket message sending for every change
-
     public DisciplineResponseDTO createDiscipline(DisciplineRequestDTO disciplineDTO, User user) {
         Discipline discipline = modelDTOConverter.convert(disciplineDTO, user);
         discipline = disciplineRepository.save(discipline);
