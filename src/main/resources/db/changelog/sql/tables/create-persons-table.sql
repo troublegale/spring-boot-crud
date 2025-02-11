@@ -1,6 +1,7 @@
 CREATE TABLE persons
 (
     id          SERIAL PRIMARY KEY,
+    name        VARCHAR            NOT NULL CHECK (name <> ''),
     eye_color   varchar(255)       not null check ((eye_color)::text = ANY
                                                    ((ARRAY ['RED'::character varying, 'WHITE'::character varying, 'BROWN'::character varying])::text[])),
     hair_color  varchar(255)       not null check ((eye_color)::text = ANY

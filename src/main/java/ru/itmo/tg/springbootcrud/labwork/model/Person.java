@@ -24,6 +24,11 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false)
+    @NotNull
+    @NotBlank
+    private String name;
+
     @Column(name = "eye_color", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
