@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface LabWorkRepository extends JpaRepository<LabWork, Long> {
 
-    @Query(nativeQuery = true, value = "select delete_lab_works_by_minimal_point(:p, :uId)")
-    Boolean deleteLabWorkByMinimalPoint(Integer p, Long uId);
+    @Query(nativeQuery = true, value = "select delete_lab_work_by_minimal_point(:p, :uId)")
+    Long deleteLabWorkByMinimalPoint(Integer p, Long uId);
 
     @Query(nativeQuery = true, value = "select get_count_by_author_id(:authorId)")
     Integer getCountByAuthorId(Long authorId);
