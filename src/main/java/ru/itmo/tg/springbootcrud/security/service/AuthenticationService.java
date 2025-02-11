@@ -26,18 +26,20 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ROLE_USER)
                 .build();
-        userService.createUser(user);
+        Role role = userService.createUser(user).getRole();
         String token = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(token);
+        return new JwtAuthenticationResponse(token, role);
     }
 
     public JwtAuthenticationResponse signIn(AuthRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()
         ));
-        UserDetails user = userService.userDetailsService().loadUserByUsername(request.getUsername());
-        String token = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(token);
+        UserDetails userDetails = userService.userDetailsService().loadUserByUsername(request.getUsername());
+        User user = (User) userDetails;
+        Role role = user.getRole();
+        String token = jwtService.generateToken(userDetails);
+        return new JwtAuthenticationResponse(token, role);
     }
 
 }

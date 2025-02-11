@@ -43,13 +43,13 @@ public class AdminController {
     }
 
     @PutMapping("/tickets/{id}/approve")
-    public void approveRoleChangeTicket(@PathVariable Long id) {
-        roleChangeTicketService.approveRoleChangeTicket(id, userService.getCurrentUser());
+    public RoleChangeTicketDTO approveRoleChangeTicket(@PathVariable Long id) {
+        return roleChangeTicketService.approveRoleChangeTicket(id, userService.getCurrentUser());
     }
 
     @PutMapping("/tickets/{id}/reject")
-    public void rejectRoleChangeTicket(@PathVariable Long id) {
-        roleChangeTicketService.rejectRoleChangeTicket(id, userService.getCurrentUser());
+    public RoleChangeTicketDTO rejectRoleChangeTicket(@PathVariable Long id) {
+        return roleChangeTicketService.rejectRoleChangeTicket(id, userService.getCurrentUser());
     }
 
     @GetMapping("/lab-work-history")

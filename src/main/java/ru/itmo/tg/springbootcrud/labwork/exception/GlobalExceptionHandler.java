@@ -87,4 +87,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(RoleChangeTicketNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleRoleChangeTicketNotFoundException(RoleChangeTicketNotFoundException e) {
+        return new ResponseEntity<>("Role Change Ticket with such ID does not exist", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TicketAlreadyResolvedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handleTicketAlreadyResolved(TicketAlreadyResolvedException e) {
+        return new ResponseEntity<>("Ticket with such ID has already been resolved", HttpStatus.FORBIDDEN);
+    }
+
 }

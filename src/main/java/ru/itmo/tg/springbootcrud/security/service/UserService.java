@@ -19,11 +19,11 @@ public class UserService {
     private final UserRepository repository;
     private final UserModelDTOConverter userModelDTOConverter;
 
-    public void createUser(User user) {
+    public User createUser(User user) {
         if (repository.existsByUsername(user.getUsername())) {
             throw new UsernameTakenException("Username " + user.getUsername() + " already taken");
         }
-        repository.save(user);
+        return repository.save(user);
     }
 
     public UserDTO getByUsername(String username) {

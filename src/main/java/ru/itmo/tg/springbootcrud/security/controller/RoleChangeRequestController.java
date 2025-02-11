@@ -23,8 +23,8 @@ public class RoleChangeRequestController {
     }
 
     @PostMapping("/create")
-    public void createRoleChangeRequest(@RequestBody RoleChangeRequest roleChangeRequest) {
-        roleChangeTicketService.createRoleChangeTicket(roleChangeRequest, userService.getCurrentUser());
+    public RoleChangeTicketDTO createRoleChangeRequest(@RequestBody RoleChangeRequest roleChangeRequest) {
+        return roleChangeTicketService.createRoleChangeTicket(roleChangeRequest, userService.getCurrentUser());
     }
 
 }

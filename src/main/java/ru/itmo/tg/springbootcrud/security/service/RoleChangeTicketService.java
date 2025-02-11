@@ -2,6 +2,8 @@ package ru.itmo.tg.springbootcrud.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.itmo.tg.springbootcrud.labwork.exception.RoleChangeTicketNotFoundException;
+import ru.itmo.tg.springbootcrud.labwork.exception.TicketAlreadyResolvedException;
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeRequest;
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeTicketDTO;
 import ru.itmo.tg.springbootcrud.security.model.RoleChangeTicket;
@@ -32,31 +34,42 @@ public class RoleChangeTicketService {
         return userModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findByUser(user));
     }
 
-    public void createRoleChangeTicket(RoleChangeRequest roleChangeRequest, User user) {
+    public RoleChangeTicketDTO createRoleChangeTicket(RoleChangeRequest roleChangeRequest, User user) {
         RoleChangeTicket ticket = RoleChangeTicket.builder()
                 .user(user)
                 .role(roleChangeRequest.role())
                 .status(RoleChangeTicketStatus.PENDING)
                 .resolver(null)
                 .build();
-        roleChangeTicketRepository.save(ticket);
+        ticket = roleChangeTicketRepository.save(ticket);
+        return userModelDTOConverter.convert(ticket);
     }
 
-    public void approveRoleChangeTicket(Long id, User resolver) {
-        RoleChangeTicket ticket = roleChangeTicketRepository.findById(id).orElseThrow();
+    public RoleChangeTicketDTO approveRoleChangeTicket(Long id, User resolver) {
+        RoleChangeTicket ticket = roleChangeTicketRepository.findById(id).orElseThrow(
+                RoleChangeTicketNotFoundException::new);
+        if (ticket.getStatus() != RoleChangeTicketStatus.PENDING) {
+            throw new TicketAlreadyResolvedException();
+        }
         User user = ticket.getUser();
         user.setRole(ticket.getRole());
         userRepository.save(user);
         ticket.setStatus(RoleChangeTicketStatus.APPROVED);
         ticket.setResolver(resolver);
-        roleChangeTicketRepository.save(ticket);
+        ticket = roleChangeTicketRepository.save(ticket);
+        return userModelDTOConverter.convert(ticket);
     }
 
-    public void rejectRoleChangeTicket(Long id, User resolver) {
-        RoleChangeTicket ticket = roleChangeTicketRepository.findById(id).orElseThrow();
+    public RoleChangeTicketDTO rejectRoleChangeTicket(Long id, User resolver) {
+        RoleChangeTicket ticket = roleChangeTicketRepository.findById(id).orElseThrow(
+                RoleChangeTicketNotFoundException::new);
+        if (ticket.getStatus() != RoleChangeTicketStatus.PENDING) {
+            throw new TicketAlreadyResolvedException();
+        }
         ticket.setStatus(RoleChangeTicketStatus.REJECTED);
         ticket.setResolver(resolver);
-        roleChangeTicketRepository.save(ticket);
+        ticket = roleChangeTicketRepository.save(ticket);
+        return userModelDTOConverter.convert(ticket);
     }
 
 }
