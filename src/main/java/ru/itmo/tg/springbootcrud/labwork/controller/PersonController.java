@@ -1,6 +1,7 @@
 package ru.itmo.tg.springbootcrud.labwork.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonResponseDTO;
@@ -8,6 +9,7 @@ import ru.itmo.tg.springbootcrud.labwork.service.PersonService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/persons")
@@ -16,6 +18,7 @@ public class PersonController {
 
     private final PersonService personService;
     private final UserService userService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping
     public List<PersonResponseDTO> getPersons(
@@ -33,16 +36,25 @@ public class PersonController {
 
     @PostMapping("/create")
     public PersonResponseDTO createPerson(@RequestBody PersonRequestDTO personDTO) {
-        return personService.createPerson(personDTO, userService.getCurrentUser());
+        PersonResponseDTO personResponseDTO = personService.createPerson(personDTO, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "/topic/persons", Map.of("action", "create", "value", personResponseDTO));
+        return personResponseDTO;
     }
 
     @PutMapping("/{id}/update")
     public PersonResponseDTO updatePerson(@PathVariable Long id, @RequestBody PersonRequestDTO personDTO) {
-        return personService.updatePerson(id, personDTO, userService.getCurrentUser());
+        PersonResponseDTO personResponseDTO = personService.updatePerson(
+                id, personDTO, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "/topic/persons", Map.of("action", "update", "value", personResponseDTO));
+        return personResponseDTO;
     }
 
     @DeleteMapping("/{id}/delete")
     public void deletePerson(@PathVariable Long id) {
         personService.deletePerson(id, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "/topic/persons", Map.of("action", "delete", "value", id));
     }
 }

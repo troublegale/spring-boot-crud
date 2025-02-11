@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import ru.itmo.tg.springbootcrud.labwork.exception.PasswordTooShortException;
 import ru.itmo.tg.springbootcrud.security.dto.AuthRequest;
 import ru.itmo.tg.springbootcrud.security.dto.JwtAuthenticationResponse;
 import ru.itmo.tg.springbootcrud.security.service.AuthenticationService;
@@ -22,7 +23,7 @@ public class AuthenticationController {
 
     @Operation(summary = "User registration")
     @PostMapping("/sign-up")
-    public JwtAuthenticationResponse signUp(@RequestBody @Valid AuthRequest request) {
+    public JwtAuthenticationResponse signUp(@RequestBody AuthRequest request) {
         return authenticationService.signUp(request);
     }
 

@@ -134,13 +134,12 @@ public class LabWorkService {
         updateHistoryRepository.save(updateEntry(id, Action.DELETE, user));
     }
 
-    public String deleteLabWorkByMinimalPoint(Integer p, User user) {
+    public Long deleteLabWorkByMinimalPoint(Integer p, User user) {
         Long id = labWorkRepository.deleteLabWorkByMinimalPoint(p, user.getId());
         if (id > 0) {
             updateHistoryRepository.save(updateEntry(id, Action.DELETE, user));
-            return "deleted LabWork #" + id;
         }
-        return "didn't delete LabWork";
+        return id;
     }
 
     public Integer getCountByAuthorId(Long authorId) {

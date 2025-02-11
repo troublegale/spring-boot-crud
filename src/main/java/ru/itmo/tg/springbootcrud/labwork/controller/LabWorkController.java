@@ -1,6 +1,7 @@
 package ru.itmo.tg.springbootcrud.labwork.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
@@ -8,6 +9,7 @@ import ru.itmo.tg.springbootcrud.labwork.service.LabWorkService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lab-works")
@@ -16,6 +18,7 @@ public class LabWorkController {
 
     private final LabWorkService labWorkService;
     private final UserService userService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping
     public List<LabWorkResponseDTO> getLabWorks(
@@ -33,22 +36,37 @@ public class LabWorkController {
 
     @PostMapping("/create")
     public LabWorkResponseDTO createLabWork(@RequestBody LabWorkRequestDTO labWorkDTO) {
-        return labWorkService.createLabWork(labWorkDTO, userService.getCurrentUser());
+        LabWorkResponseDTO labWorkResponseDTO = labWorkService.createLabWork(labWorkDTO, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "topic/lab-works", Map.of("action", "create", "value", labWorkResponseDTO));
+        return labWorkResponseDTO;
     }
 
     @PutMapping("/{id}/update")
     public LabWorkResponseDTO updateLabWork(@PathVariable Long id, @RequestBody LabWorkRequestDTO labWorkDTO) {
-        return labWorkService.updateLabWork(id, labWorkDTO, userService.getCurrentUser());
+        LabWorkResponseDTO labWorkResponseDTO = labWorkService.updateLabWork(
+                id, labWorkDTO, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "topic/lab-works", Map.of("action", "update", "value", labWorkResponseDTO));
+        return labWorkResponseDTO;
     }
 
     @DeleteMapping("/{id}/delete")
     public void deleteLabWork(@PathVariable Long id) {
         labWorkService.deleteLabWork(id, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "topic/lab-works", Map.of("action", "delete", "value", id));
     }
 
     @DeleteMapping("/delete-by-minimal-point")
     public String deleteLabWorkByMinimalPoint(@RequestParam(name = "point") Integer minimalPoint) {
-        return labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
+        Long result = labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
+        if (result > 0) {
+            messagingTemplate.convertAndSend(
+                    "topic/lab-works", Map.of("action", "delete", "value", result));
+            return "Deleted LabWork #" + result;
+        }
+        return "There was no LabWork assigned to current user with such minimal point";
     }
 
     @GetMapping("/count-by-author")
@@ -66,13 +84,21 @@ public class LabWorkController {
 
     @PutMapping("/{id}/adjust-difficulty")
     public LabWorkResponseDTO adjustDifficulty(@PathVariable Long id, @RequestParam Integer by) {
-        return labWorkService.adjustDifficulty(id, by, userService.getCurrentUser());
+        LabWorkResponseDTO labWorkResponseDTO = labWorkService.adjustDifficulty(
+                id, by, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "topic/lab-works", Map.of("action", "update", "value", labWorkResponseDTO));
+        return labWorkResponseDTO;
     }
 
     @PostMapping("/{id}/copy-to-discipline")
     public LabWorkResponseDTO copyLabWorkToDiscipline(@PathVariable Long id,
                                                       @RequestParam(name = "discipline-id") Long disciplineId) {
-        return labWorkService.copyLabWorkToDiscipline(id, disciplineId, userService.getCurrentUser());
+        LabWorkResponseDTO labWorkResponseDTO = labWorkService.copyLabWorkToDiscipline(
+                id, disciplineId, userService.getCurrentUser());
+        messagingTemplate.convertAndSend(
+                "topic/lab-works", Map.of("action", "create", "value", labWorkResponseDTO));
+        return labWorkResponseDTO;
     }
 
 }

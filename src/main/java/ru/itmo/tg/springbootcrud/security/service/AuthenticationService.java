@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.itmo.tg.springbootcrud.labwork.exception.PasswordTooShortException;
 import ru.itmo.tg.springbootcrud.security.dto.AuthRequest;
 import ru.itmo.tg.springbootcrud.security.dto.JwtAuthenticationResponse;
 import ru.itmo.tg.springbootcrud.security.model.User;
@@ -21,6 +22,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationResponse signUp(AuthRequest request) {
+        if (request.getPassword().length() < 8) {
+            throw new PasswordTooShortException();
+        }
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))

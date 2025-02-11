@@ -5,6 +5,7 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -97,6 +98,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<String> handleTicketAlreadyResolved(TicketAlreadyResolvedException e) {
         return new ResponseEntity<>("Ticket with such ID has already been resolved", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(PasswordTooShortException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handlePasswordTooShortException(PasswordTooShortException e) {
+        return new ResponseEntity<>("Password is too short", HttpStatus.BAD_REQUEST);
     }
 
 }
