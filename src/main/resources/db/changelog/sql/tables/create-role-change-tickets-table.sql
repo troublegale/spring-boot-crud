@@ -1,4 +1,4 @@
-CREATE TABLE role_change_tickets
+CREATE TABLE IF NOT EXISTS role_change_tickets
 (
     id          SERIAL PRIMARY KEY,
     user_id     BIGINT       NOT NULL,

@@ -1,4 +1,4 @@
-CREATE TABLE lab_works
+CREATE TABLE IF NOT EXISTS lab_works
 (
     id             SERIAL PRIMARY KEY,
     name           VARCHAR   NOT NULL CHECK (name <> ''),

@@ -1,4 +1,4 @@
-CREATE TABLE update_history
+CREATE TABLE IF NOT EXISTS update_history
 (
     id          SERIAL PRIMARY KEY,
     lab_work_id BIGINT       NOT NULL,

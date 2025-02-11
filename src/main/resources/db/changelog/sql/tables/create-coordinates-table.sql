@@ -1,4 +1,4 @@
-CREATE TABLE coordinates
+CREATE TABLE IF NOT EXISTS coordinates
 (
     id SERIAL PRIMARY KEY,
     x  DOUBLE PRECISION CHECK (x <= 599),

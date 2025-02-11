@@ -1,4 +1,4 @@
-CREATE TABLE disciplines
+CREATE TABLE IF NOT EXISTS disciplines
 (
     id            SERIAL PRIMARY KEY,
     name          VARCHAR NOT NULL,
