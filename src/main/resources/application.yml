@@ -3,7 +3,7 @@ server:
 spring:
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://host.docker.internal:5432/postgres
+        url: jdbc:postgresql://host.docker.internal:5655/postgres
         username: postgres
         password: postgres
     liquibase:

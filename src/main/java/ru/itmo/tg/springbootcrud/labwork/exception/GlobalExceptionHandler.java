@@ -1,6 +1,7 @@
 package ru.itmo.tg.springbootcrud.labwork.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.PersistentObjectException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +103,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handlePasswordTooShortException(PasswordTooShortException e) {
         return new ResponseEntity<>("Password is too short", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PersistentObjectException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handlePersistentObjectException(PersistentObjectException e) {
+        return new ResponseEntity<>("ID is not to be stated when creating an object", HttpStatus.BAD_REQUEST);
     }
 
 }

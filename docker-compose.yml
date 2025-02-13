@@ -1,5 +1,3 @@
-version: '3.1'
-
 volumes:
   postgresql_data:
 
@@ -7,11 +5,12 @@ services:
   lab-work-database:
     image: postgres:15-alpine
     ports:
-      - "5432:5432"
+      - "5655:5655"
     restart: always
     volumes:
       - postgresql_data:/var/lib/postgresql/data
     environment:
+      - PGPORT=5655
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
