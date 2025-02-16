@@ -130,8 +130,10 @@ public class LabWorkController {
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions", content = @Content(schema = @Schema(implementation = String.class))),
             }
     )
-    public Integer countLabWorkByAuthor(@RequestParam(name = "author-id") Long authorId) {
-        return labWorkService.getCountByAuthorId(authorId);
+    public String countLabWorkByAuthor(@RequestParam(name = "author-id") Long authorId) {
+        Integer result = labWorkService.getCountByAuthorId(authorId);
+        System.out.println(result);
+        return result.toString();
     }
 
     @GetMapping(value = "/description-contains", produces = MediaType.APPLICATION_JSON_VALUE)

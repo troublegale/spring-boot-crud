@@ -143,7 +143,9 @@ public class LabWorkService {
     }
 
     public Integer getCountByAuthorId(Long authorId) {
-        return labWorkRepository.getCountByAuthorId(authorId);
+        Integer result = labWorkRepository.getCountByAuthorId(authorId);
+        System.out.println(result);
+        return result;
     }
 
     public List<LabWorkResponseDTO> getLabWorksWithDescriptionContaining(String substring, Integer page, Integer pageSize) {

@@ -64,7 +64,7 @@ public class AdminController {
     @Operation(summary = "Get all Role Change Tickets",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Array of Role Change Tickets retrieved", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Array of Role Change Tickets retrieved", content = @Content(schema = @Schema(implementation = RoleChangeTicketDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions")
             }
     )
@@ -77,7 +77,7 @@ public class AdminController {
     @Operation(summary = "Get Role Change Ticket by ID",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Role Change Ticket object retrieved", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Role Change Ticket object retrieved", content = @Content(schema = @Schema(implementation = RoleChangeTicketDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions")
             }
     )
@@ -89,7 +89,7 @@ public class AdminController {
     @Operation(summary = "Approve a Role Change Ticket by ID",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Ticket approved retrieved", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Ticket approved retrieved", content = @Content(schema = @Schema(implementation = RoleChangeTicketDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions or already resolved"),
                     @ApiResponse(responseCode = "404", description = "Ticket with stated ID not found")
             }
@@ -102,7 +102,7 @@ public class AdminController {
     @Operation(summary = "Reject a Role Change Ticket by ID",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Ticket rejected", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Ticket rejected", content = @Content(schema = @Schema(implementation = RoleChangeTicketDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions or already resolved"),
                     @ApiResponse(responseCode = "404", description = "Ticket with stated ID not found")
             }
@@ -115,7 +115,7 @@ public class AdminController {
     @Operation(summary = "Get full Update History of all Lab Works",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Update History retrieved", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Update History retrieved", content = @Content(schema = @Schema(implementation = UpdateHistoryDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions")
             }
     )
@@ -127,7 +127,7 @@ public class AdminController {
     @Operation(summary = "Get Update History of a Lab Work with stated ID",
             security = @SecurityRequirement(name = "JWT"),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Lab Work's Update History retrieved", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Lab Work's Update History retrieved", content = @Content(schema = @Schema(implementation = UpdateHistoryDTO.class))),
                     @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
                     @ApiResponse(responseCode = "404", description = "Lab Work with stated ID not found")
             }
