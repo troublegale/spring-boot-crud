@@ -10,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
-import ru.itmo.tg.springbootcrud.labwork.dto.PersonResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.service.LabWorkService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
@@ -69,7 +67,7 @@ public class LabWorkController {
     public LabWorkResponseDTO createLabWork(@RequestBody LabWorkRequestDTO labWorkDTO) {
         LabWorkResponseDTO labWorkResponseDTO = labWorkService.createLabWork(labWorkDTO, userService.getCurrentUser());
         messagingTemplate.convertAndSend(
-                "topic/lab-works", Map.of("action", "create", "value", labWorkResponseDTO));
+                "/topic/labworks", Map.of("action", "create", "value", labWorkResponseDTO));
         return labWorkResponseDTO;
     }
 
@@ -87,7 +85,7 @@ public class LabWorkController {
         LabWorkResponseDTO labWorkResponseDTO = labWorkService.updateLabWork(
                 id, labWorkDTO, userService.getCurrentUser());
         messagingTemplate.convertAndSend(
-                "topic/lab-works", Map.of("action", "update", "value", labWorkResponseDTO));
+                "/topic/labworks", Map.of("action", "update", "value", labWorkResponseDTO));
         return labWorkResponseDTO;
     }
 
@@ -102,7 +100,7 @@ public class LabWorkController {
     public void deleteLabWork(@PathVariable Long id) {
         labWorkService.deleteLabWork(id, userService.getCurrentUser());
         messagingTemplate.convertAndSend(
-                "topic/lab-works", Map.of("action", "delete", "value", id));
+                "/topic/labworks", Map.of("action", "delete", "value", id));
     }
 
     @DeleteMapping(value = "/delete-by-minimal-point", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -116,7 +114,7 @@ public class LabWorkController {
         Long result = labWorkService.deleteLabWorkByMinimalPoint(minimalPoint, userService.getCurrentUser());
         if (result > 0) {
             messagingTemplate.convertAndSend(
-                    "topic/lab-works", Map.of("action", "delete", "value", result));
+                    "/topic/labworks", Map.of("action", "delete", "value", result));
             return "Deleted LabWork #" + result;
         }
         return "There was no LabWork assigned to current user with such minimal point";
@@ -164,7 +162,7 @@ public class LabWorkController {
         LabWorkResponseDTO labWorkResponseDTO = labWorkService.adjustDifficulty(
                 id, by, userService.getCurrentUser());
         messagingTemplate.convertAndSend(
-                "topic/lab-works", Map.of("action", "update", "value", labWorkResponseDTO));
+                "/topic/labworks", Map.of("action", "update", "value", labWorkResponseDTO));
         return labWorkResponseDTO;
     }
 
@@ -182,7 +180,7 @@ public class LabWorkController {
         LabWorkResponseDTO labWorkResponseDTO = labWorkService.copyLabWorkToDiscipline(
                 id, disciplineId, userService.getCurrentUser());
         messagingTemplate.convertAndSend(
-                "topic/lab-works", Map.of("action", "create", "value", labWorkResponseDTO));
+                "/topic/labworks", Map.of("action", "create", "value", labWorkResponseDTO));
         return labWorkResponseDTO;
     }
 
