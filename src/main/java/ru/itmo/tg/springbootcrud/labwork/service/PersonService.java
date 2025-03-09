@@ -34,8 +34,6 @@ public class PersonService {
         return modelDTOConverter.convert(personRepository.findById(id).orElseThrow(PersonNotFoundException::new));
     }
 
-    //TODO implement websocket message sending for every change
-
     public PersonResponseDTO createPerson(PersonRequestDTO personDTO, User user) {
         if (personRepository.existsByPassportID(personDTO.getPassportId())) {
             throw new UniqueAttributeException("this passport already exists");

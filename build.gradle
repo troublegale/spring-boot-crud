@@ -33,6 +33,7 @@ dependencies {
     implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.31.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.28'
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.4.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     compileOnly 'org.projectlombok:lombok'

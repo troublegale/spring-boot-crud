@@ -46,8 +46,6 @@ public class LabWorkService {
         return modelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new));
     }
 
-    //TODO implement websocket message sending for every change
-
     public LabWorkResponseDTO createLabWork(LabWorkRequestDTO labWorkDTO, User user) {
         if ((labWorkDTO.getDiscipline() == null && labWorkDTO.getDisciplineId() == null)
                 || (labWorkDTO.getAuthor() == null && labWorkDTO.getAuthorId() == null)) {
