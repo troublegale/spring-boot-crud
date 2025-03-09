@@ -12,6 +12,7 @@ import ru.itmo.tg.springbootcrud.labwork.exception.PersonNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.exception.UniqueAttributeException;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
+import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
@@ -22,25 +23,24 @@ import java.util.List;
 public class PersonService {
 
     private final PersonRepository personRepository;
-    private final ModelDTOConverter modelDTOConverter;
 
     public List<PersonResponseDTO> getPersons(Integer pageNumber, Integer pageSize, String order, String sortCol) {
         Page<Person> page = personRepository.findAll(PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
-        return modelDTOConverter.toPersonResponseDTOList(page.getContent());
+        return ModelDTOConverter.toPersonResponseDTOList(page.getContent());
     }
 
     public PersonResponseDTO getPersonById(Long id) {
-        return modelDTOConverter.convert(personRepository.findById(id).orElseThrow(PersonNotFoundException::new));
+        return ModelDTOConverter.convert(personRepository.findById(id).orElseThrow(PersonNotFoundException::new));
     }
 
     public PersonResponseDTO createPerson(PersonRequestDTO personDTO, User user) {
         if (personRepository.existsByPassportID(personDTO.getPassportId())) {
             throw new UniqueAttributeException("this passport already exists");
         }
-        Person person = modelDTOConverter.convert(personDTO, user);
+        Person person = ModelDTOConverter.convert(personDTO, user);
         person = personRepository.save(person);
-        return modelDTOConverter.convert(person);
+        return ModelDTOConverter.convert(person);
     }
 
     public PersonResponseDTO updatePerson(Long id, PersonRequestDTO personDTO, User user) {
@@ -60,7 +60,7 @@ public class PersonService {
         person.setPassportID(personDTO.getPassportId());
         person.setNationality(personDTO.getNationality());
         person = personRepository.save(person);
-        return modelDTOConverter.convert(person);
+        return ModelDTOConverter.convert(person);
     }
 
     public void deletePerson(Long id, User user) {

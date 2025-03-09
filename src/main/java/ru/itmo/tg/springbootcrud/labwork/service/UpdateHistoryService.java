@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.UpdateHistoryDTO;
 import ru.itmo.tg.springbootcrud.labwork.exception.LabWorkNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
+import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 
 import java.util.List;
 
@@ -13,14 +14,13 @@ import java.util.List;
 public class UpdateHistoryService {
 
     private final UpdateHistoryRepository updateHistoryRepository;
-    private final ModelDTOConverter modelDTOConverter;
 
     public List<UpdateHistoryDTO> getAllUpdateHistory() {
-        return modelDTOConverter.toUpdateHistoryDTOList(updateHistoryRepository.findAll());
+        return ModelDTOConverter.toUpdateHistoryDTOList(updateHistoryRepository.findAll());
     }
 
     public UpdateHistoryDTO getLabWorkUpdateHistory(long labId) {
-        return modelDTOConverter.convert(
+        return ModelDTOConverter.convert(
                 updateHistoryRepository.findByLabWorkID(labId).orElseThrow(LabWorkNotFoundException::new));
     }
 

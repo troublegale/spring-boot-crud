@@ -20,18 +20,17 @@ public class RoleChangeTicketService {
 
     private final RoleChangeTicketRepository roleChangeTicketRepository;
     private final UserRepository userRepository;
-    private final UserModelDTOConverter userModelDTOConverter;
 
     public List<RoleChangeTicketDTO> getAllRoleChangeRequests() {
-        return userModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findAll());
+        return UserModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findAll());
     }
 
     public RoleChangeTicketDTO getRoleChangeTicketById(Long id) {
-        return userModelDTOConverter.convert(roleChangeTicketRepository.findById(id).orElseThrow());
+        return UserModelDTOConverter.convert(roleChangeTicketRepository.findById(id).orElseThrow());
     }
 
     public List<RoleChangeTicketDTO> getRoleChangeTicketsByUser(User user) {
-        return userModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findByUser(user));
+        return UserModelDTOConverter.toRoleChangeTicketDTOList(roleChangeTicketRepository.findByUser(user));
     }
 
     public RoleChangeTicketDTO createRoleChangeTicket(RoleChangeRequest roleChangeRequest, User user) {
@@ -42,7 +41,7 @@ public class RoleChangeTicketService {
                 .resolver(null)
                 .build();
         ticket = roleChangeTicketRepository.save(ticket);
-        return userModelDTOConverter.convert(ticket);
+        return UserModelDTOConverter.convert(ticket);
     }
 
     public RoleChangeTicketDTO approveRoleChangeTicket(Long id, User resolver) {
@@ -57,7 +56,7 @@ public class RoleChangeTicketService {
         ticket.setStatus(RoleChangeTicketStatus.APPROVED);
         ticket.setResolver(resolver);
         ticket = roleChangeTicketRepository.save(ticket);
-        return userModelDTOConverter.convert(ticket);
+        return UserModelDTOConverter.convert(ticket);
     }
 
     public RoleChangeTicketDTO rejectRoleChangeTicket(Long id, User resolver) {
@@ -69,7 +68,7 @@ public class RoleChangeTicketService {
         ticket.setStatus(RoleChangeTicketStatus.REJECTED);
         ticket.setResolver(resolver);
         ticket = roleChangeTicketRepository.save(ticket);
-        return userModelDTOConverter.convert(ticket);
+        return UserModelDTOConverter.convert(ticket);
     }
 
 }

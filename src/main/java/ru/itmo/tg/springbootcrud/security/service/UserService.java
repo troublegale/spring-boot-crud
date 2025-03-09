@@ -17,7 +17,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
-    private final UserModelDTOConverter userModelDTOConverter;
 
     public User createUser(User user) {
         if (repository.existsByUsername(user.getUsername())) {
@@ -27,11 +26,11 @@ public class UserService {
     }
 
     public UserDTO getByUsername(String username) {
-        return userModelDTOConverter.convert(getUserByUsername(username));
+        return UserModelDTOConverter.convert(getUserByUsername(username));
     }
 
     public List<UserDTO> getAllUsers() {
-        return userModelDTOConverter.toUserDTOList(repository.findAll());
+        return UserModelDTOConverter.toUserDTOList(repository.findAll());
     }
 
     public User getCurrentUser() {

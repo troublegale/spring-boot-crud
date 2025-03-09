@@ -20,6 +20,7 @@ import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.LabWorkRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
+import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
@@ -34,16 +35,15 @@ public class LabWorkService {
     private final DisciplineRepository disciplineRepository;
     private final PersonRepository personRepository;
     private final UpdateHistoryRepository updateHistoryRepository;
-    private final ModelDTOConverter modelDTOConverter;
 
     public List<LabWorkResponseDTO> getLabWorks(Integer pageNumber, Integer pageSize, String order, String sortCol) {
         Page<LabWork> page = labWorkRepository.findAll(PageRequest.of(
                 pageNumber - 1, pageSize, Sort.by(Sort.Direction.fromString(order), sortCol)));
-        return modelDTOConverter.toLabWorkResponseDTOList(page.getContent());
+        return ModelDTOConverter.toLabWorkResponseDTOList(page.getContent());
     }
 
     public LabWorkResponseDTO getLabWorkById(Long id) {
-        return modelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new));
+        return ModelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new));
     }
 
     public LabWorkResponseDTO createLabWork(LabWorkRequestDTO labWorkDTO, User user) {
@@ -51,7 +51,7 @@ public class LabWorkService {
                 || (labWorkDTO.getAuthor() == null && labWorkDTO.getAuthorId() == null)) {
             throw new AbsentNestedObjectsException();
         }
-        LabWork labWork = modelDTOConverter.convert(labWorkDTO, user);
+        LabWork labWork = ModelDTOConverter.convert(labWorkDTO, user);
         if (labWork.getDiscipline() == null) {
             labWork.setDiscipline(disciplineRepository.findById(
                     labWorkDTO.getDisciplineId()).orElseThrow(DisciplineNotFoundException::new));
@@ -64,7 +64,7 @@ public class LabWorkService {
         }
         labWork = labWorkRepository.save(labWork);
         updateHistoryRepository.save(updateEntry(labWork.getId(), Action.CREATE, user));
-        return modelDTOConverter.convert(labWork);
+        return ModelDTOConverter.convert(labWork);
     }
 
     public LabWorkResponseDTO updateLabWork(Long id, LabWorkRequestDTO labWorkDTO, User user) {
@@ -120,7 +120,7 @@ public class LabWorkService {
 
         labWork = labWorkRepository.save(labWork);
         updateHistoryRepository.save(updateEntry(id, Action.UPDATE, user));
-        return modelDTOConverter.convert(labWork);
+        return ModelDTOConverter.convert(labWork);
     }
 
     public void deleteLabWork(Long id, User user) {
@@ -148,7 +148,7 @@ public class LabWorkService {
 
     public List<LabWorkResponseDTO> getLabWorksWithDescriptionContaining(String substring, Integer page, Integer pageSize) {
         var labs = labWorkRepository.getLabWorksWithDescriptionContaining(substring, page - 1, pageSize);
-        return modelDTOConverter.toLabWorkResponseDTOList(labs);
+        return ModelDTOConverter.toLabWorkResponseDTOList(labs);
     }
 
     public LabWorkResponseDTO adjustDifficulty(Long id, Integer steps, User user) {
@@ -162,13 +162,13 @@ public class LabWorkService {
         String diffVal = labWorkRepository.adjustDifficulty(id, steps, diffStringVals);
         labWork.setDifficulty(Difficulty.valueOf(diffVal));
         updateHistoryRepository.save(updateEntry(id, Action.UPDATE, user));
-        return modelDTOConverter.convert(labWork);
+        return ModelDTOConverter.convert(labWork);
     }
 
     public LabWorkResponseDTO copyLabWorkToDiscipline(Long labId, Long disciplineId, User user) {
         LabWork labWork = labWorkRepository.copyLabWorkToDiscipline(labId, disciplineId, user.getId());
         updateHistoryRepository.save(updateEntry(labWork.getId(), Action.CREATE, user));
-        return modelDTOConverter.convert(labWork);
+        return ModelDTOConverter.convert(labWork);
     }
 
     private UpdateHistory updateEntry(Long labId, Action action, User actor) {

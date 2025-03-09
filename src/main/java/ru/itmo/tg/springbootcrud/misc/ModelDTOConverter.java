@@ -1,7 +1,5 @@
-package ru.itmo.tg.springbootcrud.labwork.service;
+package ru.itmo.tg.springbootcrud.misc;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.dto.*;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
@@ -11,11 +9,9 @@ import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
 public class ModelDTOConverter {
 
-    public DisciplineResponseDTO convert(Discipline discipline) {
+    public static DisciplineResponseDTO convert(Discipline discipline) {
         return DisciplineResponseDTO.builder()
                 .id(discipline.getId())
                 .name(discipline.getName())
@@ -24,7 +20,7 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public Discipline convert(DisciplineRequestDTO dto, User owner) {
+    public static Discipline convert(DisciplineRequestDTO dto, User owner) {
         return Discipline.builder()
                 .name(dto.getName())
                 .lectureHours(dto.getLectureHours())
@@ -32,15 +28,15 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public List<DisciplineResponseDTO> toDisciplineResponseDTOList(List<Discipline> disciplineList) {
-        return disciplineList.stream().map(this::convert).toList();
+    public static List<DisciplineResponseDTO> toDisciplineResponseDTOList(List<Discipline> disciplineList) {
+        return disciplineList.stream().map(ModelDTOConverter::convert).toList();
     }
 
-    public List<Discipline> toDisciplineList(List<DisciplineRequestDTO> dtoList, User owner) {
+    public static List<Discipline> toDisciplineList(List<DisciplineRequestDTO> dtoList, User owner) {
         return dtoList.stream().map(dto -> convert(dto, owner)).toList();
     }
 
-    public PersonResponseDTO convert(Person person) {
+    public static PersonResponseDTO convert(Person person) {
         return PersonResponseDTO.builder()
                 .id(person.getId())
                 .name(person.getName())
@@ -53,7 +49,7 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public Person convert(PersonRequestDTO dto, User owner) {
+    public static Person convert(PersonRequestDTO dto, User owner) {
         return Person.builder()
                 .name(dto.getName())
                 .eyeColor(dto.getEyeColor())
@@ -65,15 +61,15 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public List<PersonResponseDTO> toPersonResponseDTOList(List<Person> personList) {
-        return personList.stream().map(this::convert).toList();
+    public static List<PersonResponseDTO> toPersonResponseDTOList(List<Person> personList) {
+        return personList.stream().map(ModelDTOConverter::convert).toList();
     }
 
-    public List<Person> toPersonList(List<PersonRequestDTO> dtoList, User owner) {
+    public static List<Person> toPersonList(List<PersonRequestDTO> dtoList, User owner) {
         return dtoList.stream().map(dto -> convert(dto, owner)).toList();
     }
 
-    public LabWorkResponseDTO convert(LabWork labWork) {
+    public static LabWorkResponseDTO convert(LabWork labWork) {
         return LabWorkResponseDTO.builder()
                 .id(labWork.getId())
                 .name(labWork.getName())
@@ -89,7 +85,7 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public LabWork convert(LabWorkRequestDTO dto, User owner) {
+    public static LabWork convert(LabWorkRequestDTO dto, User owner) {
         return LabWork.builder()
                 .name(dto.getName())
                 .coordinates(dto.getCoordinates())
@@ -103,15 +99,15 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public List<LabWorkResponseDTO> toLabWorkResponseDTOList(List<LabWork> labWorkList) {
-        return labWorkList.stream().map(this::convert).toList();
+    public static List<LabWorkResponseDTO> toLabWorkResponseDTOList(List<LabWork> labWorkList) {
+        return labWorkList.stream().map(ModelDTOConverter::convert).toList();
     }
 
-    public List<LabWork> toLabWorkList(List<LabWorkRequestDTO> dtoList, User owner) {
+    public static List<LabWork> toLabWorkList(List<LabWorkRequestDTO> dtoList, User owner) {
         return dtoList.stream().map(dto -> convert(dto, owner)).toList();
     }
 
-    public UpdateHistoryDTO convert(UpdateHistory updateHistory) {
+    public static UpdateHistoryDTO convert(UpdateHistory updateHistory) {
         return UpdateHistoryDTO.builder()
                 .labWorkId(updateHistory.getLabWorkID())
                 .username(updateHistory.getUser().getUsername())
@@ -120,8 +116,8 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public List<UpdateHistoryDTO> toUpdateHistoryDTOList(List<UpdateHistory> updateHistoryList) {
-        return updateHistoryList.stream().map(this::convert).toList();
+    public static List<UpdateHistoryDTO> toUpdateHistoryDTOList(List<UpdateHistory> updateHistoryList) {
+        return updateHistoryList.stream().map(ModelDTOConverter::convert).toList();
     }
 
 }

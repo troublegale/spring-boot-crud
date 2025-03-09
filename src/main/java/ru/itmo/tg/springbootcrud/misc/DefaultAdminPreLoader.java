@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.security.configuration;
+package ru.itmo.tg.springbootcrud.misc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
