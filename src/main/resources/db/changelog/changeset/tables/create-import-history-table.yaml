@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-import-history-table
+      author: tg
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/tables/create-import-history-table.sql

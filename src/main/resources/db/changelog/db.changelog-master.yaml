@@ -16,6 +16,8 @@ databaseChangeLog:
       file: db/changelog/changeset/tables/create-lab-works-table.yaml
   - include:
       file: db/changelog/changeset/tables/create-update-history-table.yaml
+  - include:
+      file: db/changelog/changeset/tables/create-import-history-table.yaml
   # functions
   - include:
       file: db/changelog/changeset/functions/create-adjust-lab-work-difficulty-function.yaml
