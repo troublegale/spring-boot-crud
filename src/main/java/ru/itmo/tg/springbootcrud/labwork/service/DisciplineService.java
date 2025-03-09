@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
 import ru.itmo.tg.springbootcrud.labwork.exception.DisciplineNotFoundException;
@@ -15,7 +17,7 @@ import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +40,32 @@ public class DisciplineService {
                 disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new));
     }
 
+    @Transactional
     public DisciplineResponseDTO createDiscipline(DisciplineRequestDTO disciplineDTO, User user) {
         Discipline discipline = ModelDTOConverter.convert(disciplineDTO, user);
         discipline = disciplineRepository.save(discipline);
         return ModelDTOConverter.convert(discipline);
     }
 
+    private int getHash(Discipline discipline) {
+        return Objects.hash(discipline.getName(), discipline.getLectureHours());
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public int createDisciplines(List<Discipline> disciplines) {
+        Set<Integer> uniqueHashes = new HashSet<>();
+        List<Discipline> finalList = new ArrayList<>();
+        for (Discipline discipline : disciplines) {
+            if (!uniqueHashes.contains(getHash(discipline))) {
+                uniqueHashes.add(getHash(discipline));
+                finalList.add(discipline);
+            }
+        }
+        disciplineRepository.saveAll(finalList);
+        return finalList.size();
+    }
+
+    @Transactional
     public DisciplineResponseDTO updateDiscipline(Long id, DisciplineRequestDTO disciplineDTO, User user) {
         Discipline discipline = disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
@@ -55,6 +77,7 @@ public class DisciplineService {
         return ModelDTOConverter.convert(discipline);
     }
 
+    @Transactional
     public void deleteDiscipline(Long id, User user) {
         Discipline discipline = disciplineRepository.findById(id).orElseThrow(DisciplineNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !discipline.getOwner().equals(user)) {
