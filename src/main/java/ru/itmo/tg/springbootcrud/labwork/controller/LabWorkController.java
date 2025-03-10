@@ -41,7 +41,7 @@ public class LabWorkController {
     )
     public List<LabWorkResponseDTO> getLabWorks(
             @RequestParam(defaultValue = "1", required = false) Integer page,
-            @RequestParam(defaultValue = "20", name = "page-size", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "100", name = "page-size", required = false) Integer pageSize,
             @RequestParam(defaultValue = "asc", required = false) String order,
             @RequestParam(defaultValue = "id", required = false) String sort) {
         return labWorkService.getLabWorks(page, pageSize, order, sort);

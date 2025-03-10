@@ -69,9 +69,9 @@ public class FileProcessingService {
             var sheet = workbook.getSheetAt(0);
             var iter = sheet.rowIterator();
 
-            if (clazz == LabWorkRequestDTO.class) {
+            if (clazz == LabWork.class) {
                 return processXLSXLabWork(iter);
-            } else if (clazz == PersonRequestDTO.class) {
+            } else if (clazz == Person.class) {
                 return processXLSXPerson(iter);
             } else {
                 return processXLSXDiscipline(iter);

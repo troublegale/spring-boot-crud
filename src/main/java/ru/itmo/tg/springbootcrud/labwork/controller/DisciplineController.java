@@ -50,7 +50,7 @@ public class DisciplineController {
     )
     public List<DisciplineResponseDTO> getDisciplines(
             @RequestParam(defaultValue = "1") @Parameter(description = "Number of the page") Integer page,
-            @RequestParam(defaultValue = "20", name = "page-size") @Parameter(description = "Size of the page") Integer pageSize,
+            @RequestParam(defaultValue = "100", name = "page-size") @Parameter(description = "Size of the page") Integer pageSize,
             @RequestParam(defaultValue = "asc") @Parameter(description = "Sorting order (asc or desc)") String order,
             @RequestParam(defaultValue = "id") @Parameter(description = "Sorting column (has to be one of the fields of a Discipline") String sort) {
         return disciplineService.getDisciplines(page, pageSize, order, sort);

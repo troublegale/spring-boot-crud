@@ -41,7 +41,7 @@ public class PersonController {
     )
     public List<PersonResponseDTO> getPersons(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20", name = "page-size") Integer pageSize,
+            @RequestParam(defaultValue = "100", name = "page-size") Integer pageSize,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(defaultValue = "id") String sort) {
         return personService.getPersons(page, pageSize, order, sort);
