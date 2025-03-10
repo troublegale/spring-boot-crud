@@ -1,10 +1,13 @@
 package ru.itmo.tg.springbootcrud.labwork.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
@@ -26,6 +29,7 @@ import ru.itmo.tg.springbootcrud.security.model.enums.Role;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,19 @@ public class LabWorkService {
     private final DisciplineRepository disciplineRepository;
     private final PersonRepository personRepository;
     private final UpdateHistoryRepository updateHistoryRepository;
+
+    private final ConcurrentHashMap<String, Object> uniqueLabs = new ConcurrentHashMap<>();
+    private final static Object BOB = new Object();
+
+    @PostConstruct
+    private void initKeys() {
+        labWorkRepository.findAll().forEach(labWork ->
+                uniqueLabs.put(getKey(labWork.getName(), labWork.getDescription()), BOB));
+    }
+
+    private String getKey(String name, String description) {
+        return name + "::" + description;
+    }
 
     public List<LabWorkResponseDTO> getLabWorks(Integer pageNumber, Integer pageSize, String order, String sortCol) {
         Page<LabWork> page = labWorkRepository.findAll(PageRequest.of(
@@ -46,7 +63,13 @@ public class LabWorkService {
         return ModelDTOConverter.convert(labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new));
     }
 
+    @Transactional
     public LabWorkResponseDTO createLabWork(LabWorkRequestDTO labWorkDTO, User user) {
+        String key = getKey(labWorkDTO.getName(), labWorkDTO.getDescription());
+        if (uniqueLabs.containsKey(key)) {
+            throw new UniqueAttributeException("LabWork with such name and description already exists");
+        }
+
         if ((labWorkDTO.getDiscipline() == null && labWorkDTO.getDisciplineId() == null)
                 || (labWorkDTO.getAuthor() == null && labWorkDTO.getAuthorId() == null)) {
             throw new AbsentNestedObjectsException();
@@ -63,10 +86,28 @@ public class LabWorkService {
             throw new UniqueAttributeException("this passport already exists");
         }
         labWork = labWorkRepository.save(labWork);
+        uniqueLabs.put(key, BOB);
         updateHistoryRepository.save(updateEntry(labWork.getId(), Action.CREATE, user));
         return ModelDTOConverter.convert(labWork);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public int createLabWorks(List<LabWork> labWorks) {
+        for (LabWork labWork : labWorks) {
+            String key = getKey(labWork.getName(), labWork.getDescription());
+            if (uniqueLabs.containsKey(key)) {
+                throw new UniqueAttributeException("LabWork with such name and description already exists");
+            }
+            if (personRepository.existsByPassportID(labWork.getAuthor().getPassportID())) {
+                throw new UniqueAttributeException("this passport already exists");
+            }
+        }
+        labWorkRepository.saveAll(labWorks);
+        labWorks.forEach(labWork -> uniqueLabs.put(getKey(labWork.getName(), labWork.getDescription()), BOB));
+        return labWorks.size();
+    }
+
+    @Transactional
     public LabWorkResponseDTO updateLabWork(Long id, LabWorkRequestDTO labWorkDTO, User user) {
         LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
@@ -123,6 +164,7 @@ public class LabWorkService {
         return ModelDTOConverter.convert(labWork);
     }
 
+    @Transactional
     public void deleteLabWork(Long id, User user) {
         LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
@@ -132,6 +174,7 @@ public class LabWorkService {
         updateHistoryRepository.save(updateEntry(id, Action.DELETE, user));
     }
 
+    @Transactional
     public Long deleteLabWorkByMinimalPoint(Integer p, User user) {
         Long id = labWorkRepository.deleteLabWorkByMinimalPoint(p, user.getId());
         if (id > 0) {
@@ -151,6 +194,7 @@ public class LabWorkService {
         return ModelDTOConverter.toLabWorkResponseDTOList(labs);
     }
 
+    @Transactional
     public LabWorkResponseDTO adjustDifficulty(Long id, Integer steps, User user) {
         LabWork labWork = labWorkRepository.findById(id).orElseThrow(LabWorkNotFoundException::new);
         if (user.getRole() != Role.ROLE_ADMIN && !labWork.getOwner().equals(user)) {
@@ -165,6 +209,7 @@ public class LabWorkService {
         return ModelDTOConverter.convert(labWork);
     }
 
+    @Transactional
     public LabWorkResponseDTO copyLabWorkToDiscipline(Long labId, Long disciplineId, User user) {
         LabWork labWork = labWorkRepository.copyLabWorkToDiscipline(labId, disciplineId, user.getId());
         updateHistoryRepository.save(updateEntry(labWork.getId(), Action.CREATE, user));

@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkResponseDTO;
+import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
+import ru.itmo.tg.springbootcrud.labwork.service.FileProcessingService;
 import ru.itmo.tg.springbootcrud.labwork.service.LabWorkService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
@@ -26,6 +29,7 @@ public class LabWorkController {
 
     private final LabWorkService labWorkService;
     private final UserService userService;
+    private final FileProcessingService fileProcessingService;
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -182,6 +186,20 @@ public class LabWorkController {
         messagingTemplate.convertAndSend(
                 "/topic/labworks", Map.of("action", "create", "value", labWorkResponseDTO));
         return labWorkResponseDTO;
+    }
+
+    @PostMapping("/import")
+    @Operation(summary = "Import a .xlsx file",
+            security = @SecurityRequirement(name = "JWT"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "LabWorks were created", content = @Content(schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "403", description = "Insufficient permissions", content = @Content(schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid content, constraint violation, bad file", content = @Content(schema = @Schema(implementation = String.class)))
+            }
+    )
+    public String importLabWorks(MultipartFile file) {
+        fileProcessingService.processFile(file, LabWork.class);
+        return "File imported successfully";
     }
 
 }

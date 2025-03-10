@@ -1,10 +1,7 @@
 package ru.itmo.tg.springbootcrud.misc;
 
 import ru.itmo.tg.springbootcrud.labwork.dto.*;
-import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
-import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
-import ru.itmo.tg.springbootcrud.labwork.model.Person;
-import ru.itmo.tg.springbootcrud.labwork.model.UpdateHistory;
+import ru.itmo.tg.springbootcrud.labwork.model.*;
 import ru.itmo.tg.springbootcrud.security.model.User;
 
 import java.util.List;
@@ -118,6 +115,20 @@ public class ModelDTOConverter {
 
     public static List<UpdateHistoryDTO> toUpdateHistoryDTOList(List<UpdateHistory> updateHistoryList) {
         return updateHistoryList.stream().map(ModelDTOConverter::convert).toList();
+    }
+
+    public static ImportHistoryDTO convert(ImportHistory importHistory) {
+        return ImportHistoryDTO.builder()
+                .id(importHistory.getId())
+                .fileName(importHistory.getFileName())
+                .username(importHistory.getUser().getUsername())
+                .status(importHistory.getImportStatus())
+                .importNumber(importHistory.getImportNumber())
+                .build();
+    }
+
+    public static List<ImportHistoryDTO> toImportHistoryDTOList(List<ImportHistory> importHistoryList) {
+        return importHistoryList.stream().map(ModelDTOConverter::convert).toList();
     }
 
 }

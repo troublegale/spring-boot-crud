@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.exception.UsernameTakenException;
+import ru.itmo.tg.springbootcrud.misc.UserModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.repository.UserRepository;

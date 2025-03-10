@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS import_history
     user_id       BIGINT      NOT NULL REFERENCES users (id),
     import_status varchar(64) NOT NULL
         check ((import_status)::text = ANY
-               ((ARRAY ['IMPORTED'::character varying, 'REJECTED'::character varying, 'DUPLICATE'::character varying])::text[])),
+               ((ARRAY ['PROCESSING'::character varying, 'IMPORTED'::character varying, 'REJECTED'::character varying])::text[])),
     import_number INT         NOT NULL
 );

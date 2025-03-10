@@ -36,6 +36,9 @@ public class FileProcessingService {
     private final ImportHistoryRepository importHistoryRepository;
 
     public void processFile(MultipartFile file, Class<?> clazz) {
+        if (file == null || file.isEmpty()) {
+            throw new BadFileException("empty file");
+        }
         String contentType = file.getContentType();
         if (!Objects.equals(contentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
             throw new BadFileException(".xlsx file required");

@@ -1,4 +1,4 @@
-package ru.itmo.tg.springbootcrud.security.service;
+package ru.itmo.tg.springbootcrud.misc;
 
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeTicketDTO;
 import ru.itmo.tg.springbootcrud.security.dto.UserDTO;

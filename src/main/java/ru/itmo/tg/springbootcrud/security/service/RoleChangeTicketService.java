@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.itmo.tg.springbootcrud.labwork.exception.RoleChangeTicketNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.exception.TicketAlreadyResolvedException;
+import ru.itmo.tg.springbootcrud.misc.UserModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeRequest;
 import ru.itmo.tg.springbootcrud.security.dto.RoleChangeTicketDTO;
 import ru.itmo.tg.springbootcrud.security.model.RoleChangeTicket;

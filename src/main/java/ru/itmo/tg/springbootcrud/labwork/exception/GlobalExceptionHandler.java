@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UniqueAttributeException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<String> handleUniqueAttributeException(UniqueAttributeException e) {
-        return new ResponseEntity<>("Duplicate key found: " + e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>("Unique attributes duplicated: " + e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UsernameTakenException.class)
@@ -109,6 +109,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handlePersistentObjectException(PersistentObjectException e) {
         return new ResponseEntity<>("ID is not to be stated when creating an object", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleBadFileException(BadFileException e) {
+        return new ResponseEntity<>("Bad file: " + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

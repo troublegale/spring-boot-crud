@@ -13,9 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
+import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.service.DisciplineService;
+import ru.itmo.tg.springbootcrud.labwork.service.FileProcessingService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
@@ -35,6 +38,7 @@ public class DisciplineController {
 
     private final DisciplineService disciplineService;
     private final UserService userService;
+    private final FileProcessingService fileProcessingService;
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,4 +115,17 @@ public class DisciplineController {
                 "/topic/disciplines", Map.of("action", "delete", "value", id));
     }
 
+    @PostMapping("/import")
+    @Operation(summary = "Import a .xlsx file",
+            security = @SecurityRequirement(name = "JWT"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Disciplines were created", content = @Content(schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "403", description = "Insufficient permissions", content = @Content(schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid content, constraint violation, bad file", content = @Content(schema = @Schema(implementation = String.class)))
+            }
+    )
+    public String importDisciplines(MultipartFile file) {
+        fileProcessingService.processFile(file, Discipline.class);
+        return "File imported successfully";
+    }
 }
