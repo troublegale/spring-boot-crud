@@ -23,6 +23,7 @@ import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.LabWorkRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
 import ru.itmo.tg.springbootcrud.labwork.repository.UpdateHistoryRepository;
+import ru.itmo.tg.springbootcrud.labwork.validator.LabWorkValidator;
 import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
@@ -39,6 +40,7 @@ public class LabWorkService {
     private final DisciplineRepository disciplineRepository;
     private final PersonRepository personRepository;
     private final UpdateHistoryRepository updateHistoryRepository;
+    private final LabWorkValidator labWorkValidator;
 
     private final ConcurrentHashMap<String, Object> uniqueLabs = new ConcurrentHashMap<>();
     private final static Object BOB = new Object();
@@ -75,6 +77,7 @@ public class LabWorkService {
             throw new AbsentNestedObjectsException();
         }
         LabWork labWork = ModelDTOConverter.convert(labWorkDTO, user);
+        labWorkValidator.validateLabWork(labWork);
         if (labWork.getDiscipline() == null) {
             labWork.setDiscipline(disciplineRepository.findById(
                     labWorkDTO.getDisciplineId()).orElseThrow(DisciplineNotFoundException::new));
@@ -94,6 +97,7 @@ public class LabWorkService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public int createLabWorks(List<LabWork> labWorks) {
         for (LabWork labWork : labWorks) {
+            labWorkValidator.validateLabWork(labWork);
             String key = getKey(labWork.getName(), labWork.getDescription());
             if (uniqueLabs.containsKey(key)) {
                 throw new UniqueAttributeException("LabWork with such name and description already exists");

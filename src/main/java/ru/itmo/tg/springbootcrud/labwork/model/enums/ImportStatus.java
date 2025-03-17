@@ -4,6 +4,8 @@ public enum ImportStatus {
 
     PROCESSING,
     IMPORTED,
-    REJECTED
+    REJECTED,
+    DB_ERROR,
+    MINIO_ERROR
 
 }

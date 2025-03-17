@@ -15,6 +15,7 @@ import ru.itmo.tg.springbootcrud.labwork.exception.UniqueAttributeException;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.model.Person;
 import ru.itmo.tg.springbootcrud.labwork.repository.PersonRepository;
+import ru.itmo.tg.springbootcrud.labwork.validator.PersonValidator;
 import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
@@ -26,6 +27,7 @@ import java.util.*;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final PersonValidator personValidator;
 
     public List<PersonResponseDTO> getPersons(Integer pageNumber, Integer pageSize, String order, String sortCol) {
         Page<Person> page = personRepository.findAll(PageRequest.of(
@@ -43,6 +45,7 @@ public class PersonService {
             throw new UniqueAttributeException("this passport already exists");
         }
         Person person = ModelDTOConverter.convert(personDTO, user);
+        personValidator.validatePerson(person);
         person = personRepository.save(person);
         return ModelDTOConverter.convert(person);
     }
@@ -58,6 +61,7 @@ public class PersonService {
         Set<Integer> uniqueHashes = new HashSet<>();
         List<Person> finalList = new ArrayList<>();
         for (Person person : persons) {
+            personValidator.validatePerson(person);
             if (!uniqueHashes.contains(getHash(person))) {
                 uniqueHashes.add(getHash(person));
                 finalList.add(person);

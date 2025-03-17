@@ -13,6 +13,7 @@ import ru.itmo.tg.springbootcrud.labwork.exception.DisciplineNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.exception.InsufficientPermissionsException;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
 import ru.itmo.tg.springbootcrud.labwork.repository.DisciplineRepository;
+import ru.itmo.tg.springbootcrud.labwork.validator.DisciplineValidator;
 import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.model.User;
 import ru.itmo.tg.springbootcrud.security.model.enums.Role;
@@ -24,6 +25,7 @@ import java.util.*;
 public class DisciplineService {
 
     private final DisciplineRepository disciplineRepository;
+    private final DisciplineValidator disciplineValidator;
 
     public List<DisciplineResponseDTO> getDisciplines(
             Integer pageNumber, Integer pageSize, String order, String sortCol) {
@@ -43,6 +45,7 @@ public class DisciplineService {
     @Transactional
     public DisciplineResponseDTO createDiscipline(DisciplineRequestDTO disciplineDTO, User user) {
         Discipline discipline = ModelDTOConverter.convert(disciplineDTO, user);
+        disciplineValidator.validateDiscipline(discipline);
         discipline = disciplineRepository.save(discipline);
         return ModelDTOConverter.convert(discipline);
     }
@@ -56,6 +59,7 @@ public class DisciplineService {
         Set<Integer> uniqueHashes = new HashSet<>();
         List<Discipline> finalList = new ArrayList<>();
         for (Discipline discipline : disciplines) {
+            disciplineValidator.validateDiscipline(discipline);
             if (!uniqueHashes.contains(getHash(discipline))) {
                 uniqueHashes.add(getHash(discipline));
                 finalList.add(discipline);
