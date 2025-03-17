@@ -3,16 +3,20 @@ server:
 spring:
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://host.docker.internal:5655/postgres
+        url: jdbc:postgresql://localhost:5655/postgres
         username: postgres
         password: postgres
-    liquibase:
-        enabled: true
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: none
+            ddl-auto: update
         open-in-view: on
+minio:
+    url: http://localhost:9000
+    access:
+        name: admin
+        secret: password
+    bucket-name: import-files
 jwt:
     secret: b9405f70481b1df904743ea7eec4dd7155aa6a3f04061a6bf2caac43f0ec898e94e0b87de93dd85315524033952ed5bb3df1f67012d5140de7a864c6e0355059b5d8d2128fee57ba6e0f32c2977959db782d3b1ef985ba10fcba8db6236f6dae41d09a66da1aa9089826869f6b8209e5b7088641089f3db04ab4ac5a40901252
     lifetime: 86400000

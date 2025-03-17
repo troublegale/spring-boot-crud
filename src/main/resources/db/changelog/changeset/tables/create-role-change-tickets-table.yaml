@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: create-role-change-tickets-table
-      author: tg
-      changes:
-        - sqlFile:
-            path: db/changelog/sql/tables/create-role-change-tickets-table.sql

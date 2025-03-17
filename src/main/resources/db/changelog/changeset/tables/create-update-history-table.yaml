@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: create-update-history-table
-      author: tg
-      changes:
-        - sqlFile:
-            path: db/changelog/sql/tables/create-update-history-table.sql

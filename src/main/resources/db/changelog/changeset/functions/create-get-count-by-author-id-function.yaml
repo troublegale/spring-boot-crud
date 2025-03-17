@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: create-get-count-by-author-id-function
-      author: tg
-      changes:
-        - sqlFile:
-            path: db/changelog/sql/functions/create-get-count-by-author-id-function.sql

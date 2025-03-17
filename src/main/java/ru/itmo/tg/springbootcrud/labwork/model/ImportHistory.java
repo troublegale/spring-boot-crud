@@ -25,6 +25,10 @@ public class ImportHistory {
     @NotNull
     private String fileName;
 
+    @Column(name = "file_name_minio", nullable = false)
+    @NotNull
+    private String fileNameMinio;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne
     @NotNull

@@ -5,21 +5,35 @@ services:
   lab-work-database:
     image: postgres:15-alpine
     ports:
-      - "5655:5655"
+    - "5655:5655"
     restart: always
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+    - postgresql_data:/var/lib/postgresql/data
     environment:
-      - PGPORT=5655
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    - PGPORT=5655
+    - POSTGRES_DB=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
     container_name: lab-work-database
 
-  lab-work-app:
-    build: .
+  lab-work-minio:
+    image: minio/minio:latest
+    container_name: lab-work-minio
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+    - ./minio_data:/data
     ports:
-      - "8383:8383"
-    depends_on:
-      - lab-work-database
-    container_name: lab-work-app
+    - "9000:9000"
+    - "9001:9001"
+    command: server /data --console-address ":9001"
+    restart: always
+
+#  lab-work-app:
+#    build: .
+#    ports:
+#    - "8383:8383"
+#    depends_on:
+#    - lab-work-database
+#    container_name: lab-work-app
