@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.tg.springbootcrud.labwork.dto.ImportHistoryDTO;
+import ru.itmo.tg.springbootcrud.labwork.exception.ImportHistoryNotFoundException;
 import ru.itmo.tg.springbootcrud.labwork.model.ImportHistory;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.ImportStatus;
 import ru.itmo.tg.springbootcrud.labwork.repository.ImportHistoryRepository;
@@ -26,6 +27,11 @@ public class ImportHistoryService {
             return ModelDTOConverter.toImportHistoryDTOList(importHistoryRepository.findAll());
         }
         return ModelDTOConverter.toImportHistoryDTOList(importHistoryRepository.findByUser(user));
+    }
+
+    public ImportHistory getImportHistory(Long id) {
+        return importHistoryRepository.findById(id).orElseThrow(() ->
+                new ImportHistoryNotFoundException("file not found"));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
