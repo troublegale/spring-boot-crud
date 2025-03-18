@@ -38,7 +38,8 @@ public class LabWork {
     @Column(name = "creation_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
-    private Date creationDate;
+    @Builder.Default
+    private Date creationDate = new Date();
 
     @Column(name = "description")
     @NotBlank
@@ -70,10 +71,5 @@ public class LabWork {
     @ManyToOne
     @NotNull
     private User owner;
-
-    @PrePersist
-    protected void onCreate() {
-        creationDate = new Date();
-    }
 
 }

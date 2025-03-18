@@ -125,7 +125,7 @@ public class DisciplineController {
             }
     )
     public String importDisciplines(MultipartFile file) {
-        fileProcessingService.processFile(file, Discipline.class);
+//        fileProcessingService.processFile(file, Discipline.class);
         return "File imported successfully";
     }
 }

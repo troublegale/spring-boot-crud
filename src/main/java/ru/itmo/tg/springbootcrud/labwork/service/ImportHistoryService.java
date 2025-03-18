@@ -1,7 +1,9 @@
 package ru.itmo.tg.springbootcrud.labwork.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.tg.springbootcrud.labwork.dto.ImportHistoryDTO;
 import ru.itmo.tg.springbootcrud.labwork.model.ImportHistory;
@@ -19,7 +21,6 @@ public class ImportHistoryService {
 
     private final ImportHistoryRepository importHistoryRepository;
 
-    @Transactional
     public List<ImportHistoryDTO> getImportHistory(User user) {
         if (user.getRole().equals(Role.ROLE_ADMIN)) {
             return ModelDTOConverter.toImportHistoryDTOList(importHistoryRepository.findAll());
@@ -27,9 +28,8 @@ public class ImportHistoryService {
         return ModelDTOConverter.toImportHistoryDTOList(importHistoryRepository.findByUser(user));
     }
 
-    @Transactional
-    public void update(ImportHistory importHistory, ImportStatus importStatus) {
-        importHistory.setImportStatus(importStatus);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void save(ImportHistory importHistory) {
         importHistoryRepository.save(importHistory);
     }
 

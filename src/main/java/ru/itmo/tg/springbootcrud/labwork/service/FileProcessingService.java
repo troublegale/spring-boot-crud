@@ -1,28 +1,30 @@
 package ru.itmo.tg.springbootcrud.labwork.service;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.LabWorkRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.PersonRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.exception.BadFileException;
+import ru.itmo.tg.springbootcrud.labwork.exception.StorageException;
+import ru.itmo.tg.springbootcrud.labwork.exception.UniqueAttributeException;
 import ru.itmo.tg.springbootcrud.labwork.model.*;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Color;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Country;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.Difficulty;
 import ru.itmo.tg.springbootcrud.labwork.model.enums.ImportStatus;
-import ru.itmo.tg.springbootcrud.labwork.repository.ImportHistoryRepository;
 import ru.itmo.tg.springbootcrud.misc.ModelDTOConverter;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -33,36 +35,58 @@ public class FileProcessingService {
     private final DisciplineService disciplineService;
     private final PersonService personService;
     private final LabWorkService labWorkService;
-    private final ImportHistoryRepository importHistoryRepository;
+    private final ImportHistoryService importHistoryService;
+    private final MinIOService minIOService;
 
-    public void processFile(MultipartFile file, Class<?> clazz) {
-        if (file == null || file.isEmpty()) {
-            throw new BadFileException("empty file");
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
+    public void processFile(MultipartFile file, Class<?> clazz, String fileNameInMinio, ImportHistory importHistory) throws StorageException, BadFileException, InterruptedException {
+
+        int imported;
+
+        try {
+
+            imported = processXLSX(file, clazz);
+
+        } catch (IOException e) {
+            try {
+                importHistory.setImportStatus(ImportStatus.REJECTED);
+                importHistoryService.save(importHistory);
+            } catch (Exception ex) {
+                throw new StorageException("DB error");
+            }
+            throw new BadFileException("error reading file: " + e.getMessage());
+
+        } catch (Exception e) {
+            throw new StorageException("DB error");
         }
-        String contentType = file.getContentType();
-        if (!Objects.equals(contentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-            throw new BadFileException(".xlsx file required");
-        }
-        ImportHistory importHistory = ImportHistory.builder()
-                .fileName(file.getOriginalFilename())
-                .user(userService.getCurrentUser())
-                .importStatus(ImportStatus.PROCESSING)
-                .importNumber(0)
-                .build();
-        importHistoryRepository.save(importHistory);
-        int imported = processXLSX(file, clazz);
+
         if (imported > 0) {
-            importHistory.setImportNumber(imported);
-            importHistory.setImportStatus(ImportStatus.IMPORTED);
-            importHistoryRepository.save(importHistory);
+            try {
+                importHistory.setImportNumber(imported);
+                minIOService.uploadFile(fileNameInMinio, file);
+            } catch (Exception e) {
+                try {
+                    importHistory.setImportStatus(ImportStatus.ERROR);
+                    importHistoryService.save(importHistory);
+                } catch (Exception ex) {
+                    throw new StorageException("DB & MinIO error");
+                }
+                throw new StorageException("MinIO error");
+            }
         } else {
-            importHistory.setImportStatus(ImportStatus.REJECTED);
-            importHistoryRepository.save(importHistory);
+            try {
+                importHistory.setImportStatus(ImportStatus.REJECTED);
+                importHistoryService.save(importHistory);
+            } catch (Exception e) {
+                throw new StorageException("DB error");
+            }
             throw new BadFileException("bad file content");
         }
+
+//        Thread.sleep(5*1000);
     }
 
-    private int processXLSX(MultipartFile file, Class<?> clazz) {
+    private int processXLSX(MultipartFile file, Class<?> clazz) throws Exception {
         try (InputStream inputStream = file.getInputStream()) {
 
             var workbook = new XSSFWorkbook(inputStream);
@@ -77,7 +101,7 @@ public class FileProcessingService {
                 return processXLSXDiscipline(iter);
             }
 
-        } catch (Exception e) {
+        } catch (ValidationException | UniqueAttributeException e) {
             return -1;
         }
     }

@@ -116,7 +116,7 @@ public class PersonController {
             }
     )
     public String importPersons(MultipartFile file) {
-        fileProcessingService.processFile(file, Person.class);
+//        fileProcessingService.processFile(file, Person.class);
         return "File imported successfully";
     }
 }
