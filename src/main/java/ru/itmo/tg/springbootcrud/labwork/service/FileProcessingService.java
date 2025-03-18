@@ -109,9 +109,13 @@ public class FileProcessingService {
     private int processXLSXDiscipline(Iterator<Row> rowIterator) {
         List<DisciplineRequestDTO> disciplinesDTO = new ArrayList<>();
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            DisciplineRequestDTO discipline = extractDiscipline(row, new AtomicInteger(0));
-            disciplinesDTO.add(discipline);
+            try {
+                Row row = rowIterator.next();
+                DisciplineRequestDTO discipline = extractDiscipline(row, new AtomicInteger(0));
+                disciplinesDTO.add(discipline);
+            } catch (ValidationException e) {
+                return -1;
+            }
         }
         List<Discipline> disciplines = ModelDTOConverter.toDisciplineList(disciplinesDTO, userService.getCurrentUser());
         return disciplineService.createDisciplines(disciplines);
@@ -120,9 +124,13 @@ public class FileProcessingService {
     private int processXLSXPerson(Iterator<Row> rowIterator) {
         List<PersonRequestDTO> personsDTO = new ArrayList<>();
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            PersonRequestDTO person = extractPerson(row, new AtomicInteger(0));
-            personsDTO.add(person);
+            try {
+                Row row = rowIterator.next();
+                PersonRequestDTO person = extractPerson(row, new AtomicInteger(0));
+                personsDTO.add(person);
+            } catch (ValidationException e) {
+                return -1;
+            }
         }
         List<Person> persons = ModelDTOConverter.toPersonList(personsDTO, userService.getCurrentUser());
         return personService.createPersons(persons);
@@ -131,51 +139,67 @@ public class FileProcessingService {
     private int processXLSXLabWork(Iterator<Row> rowIterator) {
         List<LabWorkRequestDTO> labWorksDTO = new ArrayList<>();
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            LabWorkRequestDTO labWork = extractLabWork(row);
-            labWorksDTO.add(labWork);
+            try {
+                Row row = rowIterator.next();
+                LabWorkRequestDTO labWork = extractLabWork(row);
+                labWorksDTO.add(labWork);
+            } catch (ValidationException e) {
+                return -1;
+            }
         }
         List<LabWork> labWorks = ModelDTOConverter.toLabWorkList(labWorksDTO, userService.getCurrentUser());
         return labWorkService.createLabWorks(labWorks);
     }
 
     private DisciplineRequestDTO extractDiscipline(Row row, AtomicInteger c) {
-        return DisciplineRequestDTO.builder()
-                .name(row.getCell(c.getAndIncrement()).getStringCellValue())
-                .lectureHours((int) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                .build();
+        try {
+            return DisciplineRequestDTO.builder()
+                    .name(row.getCell(c.getAndIncrement()).getStringCellValue())
+                    .lectureHours((int) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                    .build();
+        } catch (Exception e) {
+            throw new ValidationException();
+        }
     }
 
     private PersonRequestDTO extractPerson(Row row, AtomicInteger c) {
-        return PersonRequestDTO.builder()
-                .name(row.getCell(c.getAndIncrement()).getStringCellValue())
-                .eyeColor(Color.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
-                .hairColor(Color.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
-                .location(Location.builder()
-                        .x((long) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                        .y(row.getCell(c.getAndIncrement()).getNumericCellValue())
-                        .z((float) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                        .build())
-                .passportId(row.getCell(c.getAndIncrement()).getStringCellValue())
-                .nationality(Country.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
-                .build();
+        try {
+            return PersonRequestDTO.builder()
+                    .name(row.getCell(c.getAndIncrement()).getStringCellValue())
+                    .eyeColor(Color.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
+                    .hairColor(Color.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
+                    .location(Location.builder()
+                            .x((long) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                            .y(row.getCell(c.getAndIncrement()).getNumericCellValue())
+                            .z((float) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                            .build())
+                    .passportId(row.getCell(c.getAndIncrement()).getStringCellValue())
+                    .nationality(Country.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
+                    .build();
+        } catch (Exception e) {
+            throw new ValidationException();
+        }
     }
 
     private LabWorkRequestDTO extractLabWork(Row row) {
-        AtomicInteger c = new AtomicInteger(0);
-        return LabWorkRequestDTO.builder()
-                .name(row.getCell(c.getAndIncrement()).getStringCellValue())
-                .coordinates(Coordinates.builder()
-                        .x(row.getCell(c.getAndIncrement()).getNumericCellValue())
-                        .y((long) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                        .build())
-                .description(row.getCell(c.getAndIncrement()).getStringCellValue())
-                .discipline(extractDiscipline(row, c))
-                .difficulty(Difficulty.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
-                .minimalPoint((int) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                .averagePoint((float) row.getCell(c.getAndIncrement()).getNumericCellValue())
-                .author(extractPerson(row, c))
-                .build();
+        try {
+            AtomicInteger c = new AtomicInteger(0);
+            return LabWorkRequestDTO.builder()
+                    .name(row.getCell(c.getAndIncrement()).getStringCellValue())
+                    .coordinates(Coordinates.builder()
+                            .x(row.getCell(c.getAndIncrement()).getNumericCellValue())
+                            .y((long) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                            .build())
+                    .description(row.getCell(c.getAndIncrement()).getStringCellValue())
+                    .discipline(extractDiscipline(row, c))
+                    .difficulty(Difficulty.valueOf(row.getCell(c.getAndIncrement()).getStringCellValue()))
+                    .minimalPoint((int) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                    .averagePoint((float) row.getCell(c.getAndIncrement()).getNumericCellValue())
+                    .author(extractPerson(row, c))
+                    .build();
+        } catch (Exception e) {
+            throw new ValidationException();
+        }
     }
 
 }

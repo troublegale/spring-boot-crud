@@ -16,13 +16,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineRequestDTO;
 import ru.itmo.tg.springbootcrud.labwork.dto.DisciplineResponseDTO;
+import ru.itmo.tg.springbootcrud.labwork.exception.BadFileException;
+import ru.itmo.tg.springbootcrud.labwork.exception.StorageException;
 import ru.itmo.tg.springbootcrud.labwork.model.Discipline;
+import ru.itmo.tg.springbootcrud.labwork.model.ImportHistory;
+import ru.itmo.tg.springbootcrud.labwork.model.LabWork;
+import ru.itmo.tg.springbootcrud.labwork.model.enums.ImportStatus;
 import ru.itmo.tg.springbootcrud.labwork.service.DisciplineService;
 import ru.itmo.tg.springbootcrud.labwork.service.FileProcessingService;
+import ru.itmo.tg.springbootcrud.labwork.service.ImportHistoryService;
+import ru.itmo.tg.springbootcrud.labwork.service.MinIOService;
 import ru.itmo.tg.springbootcrud.security.service.UserService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/disciplines")
@@ -40,6 +49,8 @@ public class DisciplineController {
     private final UserService userService;
     private final FileProcessingService fileProcessingService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ImportHistoryService importHistoryService;
+    private final MinIOService minIOService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all Disciplines",
@@ -125,7 +136,55 @@ public class DisciplineController {
             }
     )
     public String importDisciplines(MultipartFile file) {
-//        fileProcessingService.processFile(file, Discipline.class);
+
+        if (file == null || file.isEmpty()) {
+            return "empty file";
+        }
+
+        String contentType = file.getContentType();
+        if (!Objects.equals(contentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            return ".xlsx file required";
+        }
+
+        String fileNameInMinio = file.getOriginalFilename() + "_" + UUID.randomUUID();
+
+        ImportHistory importHistory = ImportHistory.builder()
+                .fileName(file.getOriginalFilename())
+                .fileNameMinio(fileNameInMinio)
+                .user(userService.getCurrentUser())
+                .importStatus(ImportStatus.ERROR)
+                .importNumber(0)
+                .build();
+
+        try {
+            importHistoryService.save(importHistory);
+        } catch (Exception e) {
+            return "DB error";
+        }
+
+        try {
+            fileProcessingService.processFile(file, Discipline.class, fileNameInMinio, importHistory);
+        } catch (BadFileException e) {
+            return "Failed to import, bad file: " + e.getMessage();
+        } catch (StorageException e) {
+            return "Failed to import, storage error: " + e.getMessage();
+        } catch (Exception e) {
+            try {
+                minIOService.deleteFile(fileNameInMinio);
+            } catch (Exception ignored) {
+                return "Failed to import, storage error: DB & MinIO Error";
+            }
+            return "Failed to import, storage error: DB Error";
+        }
+
+        try {
+            importHistory.setImportStatus(ImportStatus.IMPORTED);
+            importHistoryService.save(importHistory);
+        } catch (Exception e) {
+            throw new StorageException("DB error");
+        }
+
         return "File imported successfully";
     }
+
 }
